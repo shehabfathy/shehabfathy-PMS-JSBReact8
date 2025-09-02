@@ -40,9 +40,9 @@ function VerifyAccount() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="container-fluid bg-overlay">
-        <div className="row justify-content-center align-items-center">
+    <section className="verfiy-container">
+      <div className="container">
+        <div className="row justify-content-center align-items-center vh-100">
           {/* Logo */}
           <div className="logo-container text-center mb-3">
             <img className="logo" src={logo} alt="logo" />
@@ -119,7 +119,7 @@ function VerifyAccount() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

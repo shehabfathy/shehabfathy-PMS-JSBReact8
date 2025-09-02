@@ -74,15 +74,15 @@ function Register() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="container-fluid bg-overlay">
-        <div className="row  justify-content-center align-items-center ">
+    <section className="register-container">
+      <div className="container">
+        <div className="row vh-100 d-flex justify-content-center align-items-center overflow-auto">
           {/* Logo */}
           <div className="logo-container text-center mb-3">
             <img className="logo" src={logo} alt="logo" />
           </div>
 
-          <div className="col-md-8 rounded-3 px-5 py-5 mx-auto form-container">
+          <div className="col-md-8 rounded-3 px-3 py-3 mx-auto form-container">
             {/* Title */}
             <div className="title mb-4 text-start">
               <p className="text-white">Welcome to PMS</p>
@@ -301,7 +301,7 @@ function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

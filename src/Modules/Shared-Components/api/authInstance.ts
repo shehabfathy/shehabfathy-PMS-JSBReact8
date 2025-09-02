@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://upskilling-egypt.com:3003/api/v1", // ✅ Your API base URL
+  baseURL: "https://upskilling-egypt.com:3003/api/v1", // ✅ Your API base URL
   headers: {
     Accept: "application/json",
   },

@@ -74,26 +74,26 @@ function Register() {
   };
 
   return (
-    <section className="register-container">
+    <section className="register-container vh-100 py-2  overflow-auto ">
       <div className="container">
-        <div className="row vh-100 d-flex justify-content-center align-items-center overflow-auto">
+        <div className="row  d-flex justify-content-center align-items-center">
           {/* Logo */}
           <div className="logo-container text-center mb-3">
             <img className="logo" src={logo} alt="logo" />
           </div>
 
-          <div className="col-md-8 rounded-3 px-3 py-3 mx-auto form-container">
+          <div className="col-md-9 rounded-3 p-3 mx-auto form-container">
             {/* Title */}
-            <div className="title mb-4 text-start">
-              <p className="text-white">Welcome to PMS</p>
+            <div className="title  text-start">
+              <span className="text-white">Welcome to PMS</span>
               <h4 className="register-title">Create New Account</h4>
             </div>
 
             {/* Image Upload */}
-            <div className="text-center mb-4">
+            <div className="text-center ">
               <label
                 htmlFor="profileImage"
-                className="d-block rounded-3 p-4 mx-auto upload-label"
+                className="d-block rounded-3 mb-2  mx-auto upload-label"
               >
                 <i className="fa fa-upload me-2"></i> Upload Image
               </label>
@@ -156,6 +156,7 @@ function Register() {
                     <div className="input-group">
                       <input
                         type={showPassword.password ? "text" : "password"}
+                        autoComplete="new-password"
                         className="form-control"
                         placeholder="Password"
                         {...register("password", {

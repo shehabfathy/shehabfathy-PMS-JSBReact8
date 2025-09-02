@@ -48,7 +48,7 @@ function VerifyAccount() {
             <img className="logo" src={logo} alt="logo" />
           </div>
 
-          <div className="col-md-6 rounded-3 px-5 py-5 mx-auto form-container my-5">
+          <div className="col-md-6 rounded-3 p-3 mx-auto form-container my-5">
             {/* Title */}
             <div className="title mb-4 text-start">
               <p className="text-white">Verify Your Account</p>

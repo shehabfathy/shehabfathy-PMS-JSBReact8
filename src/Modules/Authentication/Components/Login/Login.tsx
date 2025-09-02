@@ -14,9 +14,14 @@ export default function Login() {
     register,
     formState: { errors, isSubmitting, isDirty, isValid },
     handleSubmit,
-  } = useForm();
+  } = useForm<loginFormValues>();
 
-  const onSubmit = async (value: object) => {
+  type loginFormValues = {
+    email: string;
+    password: string;
+  };
+
+  const onSubmit = async (value: loginFormValues) => {
     try {
       const { data } = await axios.post(
         `https://upskilling-egypt.com:3003/api/v1/Users/Login`,
@@ -25,8 +30,9 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       toast.success("Welcome Dear");
       navigate(ROUTES.DASHBOARD);
-    } catch (error) {
-      toast.error(error.response?.data?.message);
+    } catch (error: unknown) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -106,7 +112,7 @@ export default function Login() {
               )}
               <div className="btns d-flex justify-content-between mb-4  ">
                 <Link
-                  to={ROUTES.REGISTER.slice(1)}
+                  to={ROUTES.REGISTER}
                   style={{
                     color: "#fff",
                     textDecoration: "none",
@@ -116,7 +122,7 @@ export default function Login() {
                   Register Now ?
                 </Link>
                 <Link
-                  to={ROUTES.FORGET_PASSWORD.slice(1)}
+                  to={ROUTES.FORGET_PASSWORD}
                   style={{
                     color: "#fff",
                     textDecoration: "none",

@@ -1,5 +1,5 @@
-import { ClipLoader } from "react-spinners";
 import type { CSSProperties } from "react";
+import { ClipLoader } from "react-spinners";
 
 type SpinnerProps = {
   size?: number; // Optional, default value provided

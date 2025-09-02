@@ -1,7 +1,17 @@
-.auth-container {
-  background-image: url("./assets/auth-bg.png");
-  background-size: cover;
-  background-position: center center;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900&display=swap");
+body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 100;
+}
+
+section {
+  background-color: #013025;
+  background-repeat: no-repeat;
+  background-size: 25%, 35%;
+  background-position: bottom left, top right;
+}
+.login-container {
+  background-image: url(../src/assets/bg.png), url(../src/assets/bg-1.png);
 }
 
 .auth-container .form-container {
@@ -17,14 +27,14 @@
 
 /* Keep input transparent at all times */
 .form-container input.form-control {
-  background: transparent !important; /* Force transparency */
+  background-color: transparent !important; /* Force transparency  */
   border: none;
   border-bottom: 2px solid #ef9b28;
   border-radius: 0;
   color: white;
   padding: 10px 5px;
   font-size: 1rem;
-  box-shadow: none !important; /* Remove Bootstrap shadows */
+  box-shadow: none !important; /*Remove Bootstrap shadows*/
 }
 
 /* Placeholder styling */
@@ -35,10 +45,10 @@
 
 /* Focus state: keep transparent and change border */
 .form-container input.form-control:focus {
-  background: transparent !important; /* Stop white background */
+  background-color: transparent !important; /*Stop white background */
   outline: none;
   box-shadow: none !important;
-  border-bottom: 2px solid #ffffff; /* Highlight border on focus */
+  border-bottom: 2px solid #ffffff; /*Highlight border on focus*/
 }
 
 /* Logo smaller */
@@ -78,4 +88,13 @@
   max-height: calc(100vh - 100px); /* Adjust for header/footer */
   overflow-y: auto;
   padding: 1rem;
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    width: 80% !important;
+  }
+  .header {
+    top: 0 !important;
+  }
 }

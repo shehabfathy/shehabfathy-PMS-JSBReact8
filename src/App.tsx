@@ -17,6 +17,7 @@ import Register from "../src/Modules/Authentication/Components/Register/Register
 // import ForgetPass from "../src/Modules/Authentecation/Components/ForgetPass/ForgetPass";
 // import ResetPass from "../src/Modules/Authentecation/Components/ResetPass/ResetPass";
 import VerifyAcc from "../src/Modules/Authentication/Components/Verify-Account/Verify-Account";
+import ForgetPassword from "./Modules/Authentication/Components/Forget-Password/ForgetPassword";
 // import ChangePass from "../src/Modules/Authentecation/Components/ChangePass/ChangePass";
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
         { index: true, element: <Login /> }, // Default to Login
         { path: ROUTES.LOGIN.slice(1), element: <Login /> },
         { path: ROUTES.REGISTER.slice(1), element: <Register /> },
-        // { path: ROUTES.FORGET_PASSWORD.slice(1), element: <ForgetPass /> },
+        { path: ROUTES.FORGET_PASSWORD.slice(1), element: <ForgetPassword /> },
         // { path: ROUTES.RESET_PASSWORD.slice(1), element: <ResetPass /> },
         { path: ROUTES.VERIFY_ACCOUNT.slice(1), element: <VerifyAcc /> },
         // { path: ROUTES.CHANGE_PASSWORD.slice(1), element: <ChangePass /> },
@@ -49,7 +50,7 @@ function App() {
   return (
     <>
       <RouterProvider router={routes} />
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} limit={3} />
     </>
   );
 }

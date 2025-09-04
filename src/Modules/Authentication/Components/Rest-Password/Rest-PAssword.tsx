@@ -2,7 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 import logo from "../../../../assets/auth-logo.svg";
 import { useForm } from "react-hook-form";
-import { emailValidation, PASSWORD_VALIDATION, SEED_VALIDATION } from "../../../Shared-Components/Components/utils/formValidation";
+import {
+  emailValidation,
+  PASSWORD_VALIDATION,
+  SEED_VALIDATION,
+} from "../../../Shared-Components/Components/utils/formValidation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
@@ -13,7 +17,7 @@ export default function RestPassword() {
   const {
     register,
     watch,
-    formState: { errors, isSubmitting},
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<ResetFormValues>();
 
@@ -29,7 +33,7 @@ export default function RestPassword() {
         `https://upskilling-egypt.com:3003/api/v1/Users/Reset`,
         value
       );
-      toast.success('Password reset successful. Please login');
+      toast.success("Password reset successful. Please login");
       navigate(ROUTES.LOGIN);
     } catch (error: any) {
       console.log(error);
@@ -46,12 +50,13 @@ export default function RestPassword() {
               <img src={logo} alt="pms-logo" />
             </div>
 
-            <div
-              className="p-4 form-container rounded-4 w-100 auth-form"
-            >
+            <div className="p-4 form-container rounded-4 w-100 auth-form">
               <div className="title mb-5">
                 <span className="text-white">Welcome to PMS</span>
-                <h4><span style={{ textDecoration: "underline" }}>R</span>eset Password</h4>
+                <h4>
+                  <span style={{ textDecoration: "underline" }}>R</span>eset
+                  Password
+                </h4>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -100,7 +105,11 @@ export default function RestPassword() {
                     className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
                     style={{ cursor: "pointer" }}
                   >
-                    <i className={Show ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
+                    <i
+                      className={
+                        Show ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"
+                      }
+                    ></i>
                   </button>
                 </div>
 
@@ -111,12 +120,19 @@ export default function RestPassword() {
                 )}
 
                 <label>Confirm Password</label>
-                <div className="position-relative">
-                  <input {...register('confirmPassword', {
-                    required: 'Please confirm your password',
-                    validate: (value) =>
-                      value === watch('password') || 'Passwords do not match'
-                  })} type={Show ? 'text' : 'password'} className="form-control" placeholder="Confirm New Password" aria-label="Confirm Password" aria-describedby="basic-addon1" />
+                <div className="position-relative mb-2">
+                  <input
+                    {...register("confirmPassword", {
+                      required: "Please confirm your password",
+                      validate: (value) =>
+                        value === watch("password") || "Passwords do not match",
+                    })}
+                    type={Show ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Confirm New Password"
+                    aria-label="Confirm Password"
+                    aria-describedby="basic-addon1"
+                  />
 
                   <button
                     type="button"
@@ -124,11 +140,19 @@ export default function RestPassword() {
                     className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
                     style={{ cursor: "pointer" }}
                   >
-                    <i className={Show ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
+                    <i
+                      className={
+                        Show ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"
+                      }
+                    ></i>
                   </button>
                 </div>
 
-                {errors.confirmPassword && <div className='mb-2 text-danger'>{errors.confirmPassword.message}</div>}
+                {errors.confirmPassword && (
+                  <div className="mb-2 text-danger">
+                    {errors.confirmPassword.message}
+                  </div>
+                )}
 
                 <button
                   type="submit"

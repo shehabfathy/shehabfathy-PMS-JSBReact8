@@ -116,7 +116,7 @@ export default function ChangePassword() {
                 )}
 
                 <label>Confirm Password</label>
-                <div className="position-relative">
+                <div className="position-relative mb-2">
                   <input
                     {...register("confirmNewPassword", {
                       required: "Please confirm your password",

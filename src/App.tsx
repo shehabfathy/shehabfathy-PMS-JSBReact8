@@ -18,6 +18,8 @@ import VerifyAcc from "../src/Modules/Authentication/Components/Verify-Account/V
 import ForgetPassword from "./Modules/Authentication/Components/Forget-Password/ForgetPassword";
 import RestPassword from "./Modules/Authentication/Components/Rest-Password/Rest-PAssword";
 import ChangePassword from "./Modules/Authentication/Components/Change-Password/ChangePassword";
+import { AuthContextProvider } from "./Context/AuthContext";
+import ProtectedRoute from "./Modules/Shared-Components/Components/ProtectedRoute/ProtectedRoute";
 
 function App() {
   const routes = createBrowserRouter([
@@ -37,7 +39,11 @@ function App() {
     },
     {
       path: ROUTES.DASHBOARD.slice(1),
-      element: <MasterLayout />, // No ProtectedRoute
+      element: (
+        <ProtectedRoute>
+          <MasterLayout />
+        </ProtectedRoute>
+      ), // No ProtectedRoute
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Dashboard /> },
@@ -48,8 +54,10 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={routes} />
-      <ToastContainer position="top-right" autoClose={3000} limit={3} />
+      <AuthContextProvider>
+        <RouterProvider router={routes} />
+        <ToastContainer position="top-right" autoClose={3000} limit={3} />
+      </AuthContextProvider>
     </>
   );
 }

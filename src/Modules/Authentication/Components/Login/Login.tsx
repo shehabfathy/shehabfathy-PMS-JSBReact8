@@ -9,9 +9,11 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../../Context/AuthContext";
 
 export default function Login() {
+  const { getUser } = useContext(AuthContext);
   const [Show, setShow] = useState(false);
   const navigate = useNavigate();
   const {
@@ -32,6 +34,7 @@ export default function Login() {
         value
       );
       localStorage.setItem("token", data.token);
+      getUser();
       toast.success("Welcome Dear");
       navigate(ROUTES.DASHBOARD);
     } catch (error: any) {

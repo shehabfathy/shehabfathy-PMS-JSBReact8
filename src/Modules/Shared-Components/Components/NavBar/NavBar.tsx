@@ -7,7 +7,6 @@ import { IoMdNotifications } from "react-icons/io";
 
 export default function NavBar() {
   const { loginData } = useContext(AuthContext);
-  console.log(loginData);
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">

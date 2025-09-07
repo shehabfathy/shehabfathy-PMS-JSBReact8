@@ -10,7 +10,7 @@ function MasterLayout() {
         <div className=" ">
           <SideBar />
         </div>
-        <div className=" bg-success w-100   ">
+        <div className=" w-100   ">
           <div className="container-fluid overflow-auto">
             <Outlet />
           </div>

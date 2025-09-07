@@ -11,7 +11,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 export default function SideBar() {
   const { logOut } = useContext(AuthContext);
   return (
-    <div className="bg-danger vh-100">
+    <div className=" vh-100" style={{ backgroundColor: "#0E382F" }}>
       <Sidebar>
         <Menu>
           <MenuItem

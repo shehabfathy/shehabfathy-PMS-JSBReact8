@@ -51,6 +51,7 @@ function App() {
       ), // No ProtectedRoute
       errorElement: <NotFound />,
       children: [
+        { index: true, element: <Dashboard /> },
         { path: ROUTES.DASHBOARD.slice(1), element: <Dashboard /> },
         { path: ROUTES.Users.slice(1), element: <User /> },
         { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },

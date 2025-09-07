@@ -7,7 +7,6 @@ interface DecodedToken {
   email: string;
   exp: number;
   iat: number;
-  // add other fields your token includes
 }
 
 interface AuthContextType {
@@ -33,7 +32,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       try {
         const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
         setLoginData(decoded);
-        console.log(decoded);
       } catch (error) {
         console.error("Invalid token", error);
         logOut();
@@ -44,7 +42,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   function logOut() {
     localStorage.removeItem("token");
     setLoginData(null);
-    <Navigate to="/login" />; // ✅ redirect correctly
+    <Navigate to="/login" />;
   }
 
   useEffect(() => {

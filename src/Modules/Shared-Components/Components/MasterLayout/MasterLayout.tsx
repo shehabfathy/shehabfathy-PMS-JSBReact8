@@ -6,12 +6,12 @@ function MasterLayout() {
   return (
     <div>
       <NavBar />
-      <div className="row overflow-hidden ">
-        <div className="col-md-3 bg-danger">
+      <div className=" d-flex   overflow-hidden vh-100 ">
+        <div className=" ">
           <SideBar />
         </div>
-        <div className="col-md-9 bg-success overflow-auto  ">
-          <div className="container-fluid">
+        <div className=" bg-success w-100   ">
+          <div className="container-fluid overflow-auto">
             <Outlet />
           </div>
         </div>

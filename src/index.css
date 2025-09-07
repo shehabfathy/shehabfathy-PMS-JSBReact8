@@ -137,3 +137,11 @@ section {
     text-align: center;
   }
 }
+@media (max-width: 991px) {
+  .navbar-nav li:first-child {
+    display: none;
+  }
+  .navbar-nav li:last-child {
+    border: none !important;
+  }
+}

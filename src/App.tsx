@@ -20,6 +20,11 @@ import RestPassword from "./Modules/Authentication/Components/Rest-Password/Rest
 import ChangePassword from "./Modules/Authentication/Components/Change-Password/ChangePassword";
 import { AuthContextProvider } from "./Context/AuthContext";
 import ProtectedRoute from "./Modules/Shared-Components/Components/ProtectedRoute/ProtectedRoute";
+import User from "./Modules/Users-Module/Component/User-List/User";
+import Projects_List from "./Modules/Projects-Module/Components/Projects-List/Projects_List";
+import Projects_Data from "./Modules/Projects-Module/Components/Projects-Data/Projects_Data";
+import Tasks_List from "./Modules/Tasks-Module/Components/Tasks-List/Tasks_List";
+import Tasks_Data from "./Modules/Tasks-Module/Components/Tasks-Data/Tasks_Data";
 
 function App() {
   const routes = createBrowserRouter([
@@ -46,7 +51,13 @@ function App() {
       ), // No ProtectedRoute
       errorElement: <NotFound />,
       children: [
-        { index: true, element: <Dashboard /> },
+        { path: ROUTES.DASHBOARD.slice(1), element: <Dashboard /> },
+        { path: ROUTES.Users.slice(1), element: <User /> },
+        { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
+        { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
+        { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
+        { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
+
         // Add more open routes here
       ],
     },

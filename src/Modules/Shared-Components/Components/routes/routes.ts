@@ -8,4 +8,9 @@ export const ROUTES = {
   VERIFY_ACCOUNT: "/verify-account",
   CHANGE_PASSWORD: "/change-password",
   DASHBOARD: "/dashboard",
+  Projects_List: "/project-list",
+  Projects_Data: "/project-data",
+  Tasks_List: "/task-list",
+  Tasks_Data: "/task-data",
+  Users: "/user",
 };

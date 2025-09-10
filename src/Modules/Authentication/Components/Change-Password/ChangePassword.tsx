@@ -2,16 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 import logo from "../../../../assets/auth-logo.svg";
 import { useForm } from "react-hook-form";
-import {
-  emailValidation,
-  PASSWORD_VALIDATION,
-  SEED_VALIDATION,
-} from "../../../Shared-Components/Components/utils/formValidation";
+import { PASSWORD_VALIDATION } from "../../../Shared-Components/Components/utils/formValidation";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { useState } from "react";
-export default function RestPassword() {
+export default function ChangePassword() {
   const [Show, setShow] = useState(false);
   const navigate = useNavigate();
   const {
@@ -22,18 +18,17 @@ export default function RestPassword() {
   } = useForm<ResetFormValues>();
 
   type ResetFormValues = {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    seed: string;
+    newPassword: string;
+    oldPassword: string;
+    confirmNewPassword: string;
   };
   const onSubmit = async (value: ResetFormValues) => {
     try {
-      const response = await axios.post(
-        `https://upskilling-egypt.com:3003/api/v1/Users/Reset`,
+      const response = await axios.put(
+        `https://upskilling-egypt.com:3003/api/v1/Users/ChangePassword`,
         value
       );
-      toast.success("Password reset successful. Please login");
+      toast.success("Password changed successful. Please login");
       navigate(ROUTES.LOGIN);
     } catch (error: any) {
       console.log(error);
@@ -54,48 +49,49 @@ export default function RestPassword() {
               <div className="title mb-5">
                 <span className="text-white">Welcome to PMS</span>
                 <h4>
-                  <span style={{ textDecoration: "underline" }}>R</span>eset
+                  <span style={{ textDecoration: "underline" }}>C</span>hange
                   Password
                 </h4>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)}>
-                <label>E-mail</label>
-                <div className="input-group form-input mb-2">
+                <label>Old Password</label>
+                <div className="position-relative">
                   <input
-                    {...register("email", emailValidation)}
-                    type="email"
-                    className="form-control"
-                    placeholder="Enter your E-mail"
-                    aria-label="Email"
-                    aria-describedby="basic-addon1"
+                    {...register("oldPassword", PASSWORD_VALIDATION)}
+                    type={Show ? "text" : "password"}
+                    className="form-control pe-5"
+                    placeholder="Enter your old password"
+                    autoComplete="old-password"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShow((prev) => !prev)}
+                    className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <i
+                      className={
+                        Show ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"
+                      }
+                    ></i>
+                  </button>
                 </div>
-                {errors.email && (
-                  <div className="text-danger mb-3">{errors.email.message}</div>
-                )}
-                <label>OTP Verification</label>
-                <div className="input-group form-input mb-2">
-                  <input
-                    {...register("seed", SEED_VALIDATION)}
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Verification"
-                    aria-label="seed"
-                    aria-describedby="basic-addon1"
-                  />
-                </div>
-                {errors.seed && (
-                  <div className="text-danger mb-3">{errors.seed.message}</div>
+
+                {errors.oldPassword && (
+                  <div className="text-danger mb-3">
+                    {errors.oldPassword.message}
+                  </div>
                 )}
 
                 <label>New Password</label>
                 <div className="position-relative">
                   <input
-                    {...register("password", PASSWORD_VALIDATION)}
+                    {...register("newPassword", PASSWORD_VALIDATION)}
                     type={Show ? "text" : "password"}
                     className="form-control pe-5"
-                    placeholder="Enter your password"
+                    placeholder="Enter your new password"
                     autoComplete="new-password"
                   />
 
@@ -113,19 +109,20 @@ export default function RestPassword() {
                   </button>
                 </div>
 
-                {errors.password && (
+                {errors.newPassword && (
                   <div className="text-danger mb-3">
-                    {errors.password.message}
+                    {errors.newPassword.message}
                   </div>
                 )}
 
                 <label>Confirm Password</label>
                 <div className="position-relative mb-2">
                   <input
-                    {...register("confirmPassword", {
+                    {...register("confirmNewPassword", {
                       required: "Please confirm your password",
                       validate: (value) =>
-                        value === watch("password") || "Passwords do not match",
+                        value === watch("newPassword") ||
+                        "Passwords do not match",
                     })}
                     type={Show ? "text" : "password"}
                     className="form-control"
@@ -148,9 +145,9 @@ export default function RestPassword() {
                   </button>
                 </div>
 
-                {errors.confirmPassword && (
+                {errors.confirmNewPassword && (
                   <div className="mb-2 text-danger">
-                    {errors.confirmPassword.message}
+                    {errors.confirmNewPassword.message}
                   </div>
                 )}
 

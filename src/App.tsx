@@ -14,10 +14,17 @@ import MasterLayout from "../src/Modules/Shared-Components/Components/MasterLayo
 import Dashboard from "../src/Modules/Dashboard/Component/DashBoard";
 import Login from "../src/Modules/Authentication/Components/Login/Login";
 import Register from "../src/Modules/Authentication/Components/Register/Register";
-// import ForgetPass from "../src/Modules/Authentecation/Components/ForgetPass/ForgetPass";
-// import ResetPass from "../src/Modules/Authentecation/Components/ResetPass/ResetPass";
 import VerifyAcc from "../src/Modules/Authentication/Components/Verify-Account/Verify-Account";
-// import ChangePass from "../src/Modules/Authentecation/Components/ChangePass/ChangePass";
+import ForgetPassword from "./Modules/Authentication/Components/Forget-Password/ForgetPassword";
+import RestPassword from "./Modules/Authentication/Components/Rest-Password/Rest-PAssword";
+import ChangePassword from "./Modules/Authentication/Components/Change-Password/ChangePassword";
+import { AuthContextProvider } from "./Context/AuthContext";
+import ProtectedRoute from "./Modules/Shared-Components/Components/ProtectedRoute/ProtectedRoute";
+import User from "./Modules/Users-Module/Component/User-List/User";
+import Projects_List from "./Modules/Projects-Module/Components/Projects-List/Projects_List";
+import Projects_Data from "./Modules/Projects-Module/Components/Projects-Data/Projects_Data";
+import Tasks_List from "./Modules/Tasks-Module/Components/Tasks-List/Tasks_List";
+import Tasks_Data from "./Modules/Tasks-Module/Components/Tasks-Data/Tasks_Data";
 
 function App() {
   const routes = createBrowserRouter([
@@ -29,18 +36,29 @@ function App() {
         { index: true, element: <Login /> }, // Default to Login
         { path: ROUTES.LOGIN.slice(1), element: <Login /> },
         { path: ROUTES.REGISTER.slice(1), element: <Register /> },
-        // { path: ROUTES.FORGET_PASSWORD.slice(1), element: <ForgetPass /> },
-        // { path: ROUTES.RESET_PASSWORD.slice(1), element: <ResetPass /> },
+        { path: ROUTES.FORGET_PASSWORD.slice(1), element: <ForgetPassword /> },
+        { path: ROUTES.RESET_PASSWORD.slice(1), element: <RestPassword /> },
         { path: ROUTES.VERIFY_ACCOUNT.slice(1), element: <VerifyAcc /> },
-        // { path: ROUTES.CHANGE_PASSWORD.slice(1), element: <ChangePass /> },
+        { path: ROUTES.CHANGE_PASSWORD.slice(1), element: <ChangePassword /> },
       ],
     },
     {
       path: ROUTES.DASHBOARD.slice(1),
-      element: <MasterLayout />, // No ProtectedRoute
+      element: (
+        <ProtectedRoute>
+          <MasterLayout />
+        </ProtectedRoute>
+      ), // No ProtectedRoute
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Dashboard /> },
+        { path: ROUTES.DASHBOARD.slice(1), element: <Dashboard /> },
+        { path: ROUTES.Users.slice(1), element: <User /> },
+        { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
+        { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
+        { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
+        { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
+
         // Add more open routes here
       ],
     },
@@ -48,8 +66,10 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={routes} />
-      <ToastContainer position="top-right" autoClose={3000} />
+      <AuthContextProvider>
+        <RouterProvider router={routes} />
+        <ToastContainer position="top-right" autoClose={3000} limit={3} />
+      </AuthContextProvider>
     </>
   );
 }

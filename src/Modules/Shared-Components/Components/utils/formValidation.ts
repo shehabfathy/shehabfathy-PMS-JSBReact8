@@ -7,3 +7,17 @@ export const emailValidation: RegisterOptions<{ email: string }> = {
     message: "Invalid email address",
   },
 };
+
+export const PASSWORD_VALIDATION: RegisterOptions = {
+  required: "Password is required",
+  pattern: {
+    value:
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-{}\[\]:;"\\|,.<>\/?]).{6,}$/,
+    message:
+      "Password must contain at least 6 characters, including uppercase, lowercase, number, and special character",
+  },
+};
+
+export const SEED_VALIDATION: RegisterOptions = {
+  required: "OTP is required",
+};

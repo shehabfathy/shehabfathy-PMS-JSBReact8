@@ -1,0 +1,52 @@
+.dashboard-header {
+  background-image: url("../../../assets/home-bg.png");
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .header-content h1 {
+    font-size: 20px;
+  }
+  .header-content p {
+    font-size: 15px !important;
+  }
+}
+@media (max-width: 651px) {
+  .header-content {
+    padding: 50px 0 !important;
+  }
+  .header-content h1 {
+    font-size: 18px;
+  }
+  .header-content p {
+    font-size: 11px !important;
+  }
+}
+
+.content-task .text,
+.content-Users .text {
+  border: 2px solid transparent;
+  border-left-color: #ef9b28;
+}
+
+.item {
+  width: 33.33%;
+}
+
+.item-card {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+@media (max-width: 767px) {
+  .dashboard-chart {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chart-item {
+    flex-direction: column;
+  }
+}

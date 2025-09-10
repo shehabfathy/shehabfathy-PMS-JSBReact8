@@ -6,14 +6,22 @@ import {
   emailValidation,
   PASSWORD_VALIDATION,
 } from "../../../Shared-Components/Components/utils/formValidation";
-import axios from "axios";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../../Context/AuthContext";
+import axiosInstance, {
+  authUrl,
+} from "../../../Shared-Components/api/authInstance";
 
+export type loginFormValues = {
+  email: string;
+  password: string;
+  seed?: string;
+};
 export default function Login() {
-  const { getUser } = useContext(AuthContext);
+  const { getUser } = useContext(AuthContext)!;
   const [Show, setShow] = useState(false);
   const navigate = useNavigate();
   const {
@@ -22,24 +30,16 @@ export default function Login() {
     handleSubmit,
   } = useForm<loginFormValues>();
 
-  type loginFormValues = {
-    email: string;
-    password: string;
-  };
-
   const onSubmit = async (value: loginFormValues) => {
     try {
-      const { data } = await axios.post(
-        `https://upskilling-egypt.com:3003/api/v1/Users/Login`,
-        value
-      );
+      const { data } = await axiosInstance.post(authUrl.login, value);
       localStorage.setItem("token", data.token);
       getUser();
       toast.success("Welcome Dear");
       navigate(ROUTES.DASHBOARD);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Something went wrong!");
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Something went wrong!");
     }
   };
 

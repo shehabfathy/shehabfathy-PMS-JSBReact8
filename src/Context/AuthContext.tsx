@@ -1,39 +1,40 @@
 import { jwtDecode } from "jwt-decode";
-import React, { createContext, useEffect, useState, ReactNode } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-interface DecodedToken {
-  id: string;
-  email: string;
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+type LoginData = {
+  userName: string;
+  userEmail: string;
+  userId: number;
   exp: number;
-  iat: number;
-}
+};
 
-interface AuthContextType {
-  loginData: DecodedToken | null;
+type AuthContextType = {
+  loginData: LoginData | null;
   logOut: () => void;
   getUser: () => void;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+};
 
 interface AuthContextProviderProps {
   children: ReactNode;
 }
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [loginData, setLoginData] = useState<DecodedToken | null>(null);
+  const [loginData, setLoginData] = useState<LoginData | null>(null);
 
   function getUser() {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
+        const decoded: LoginData = jwtDecode(token);
         setLoginData(decoded);
       } catch (error) {
-        console.error("Invalid token", error);
+        const err = error as { message: string };
+        toast.error(err.message || "Invalid token");
         logOut();
       }
     }

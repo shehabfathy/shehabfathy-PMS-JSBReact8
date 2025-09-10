@@ -4,16 +4,12 @@ import NavBar from "../NavBar/NavBar";
 
 function MasterLayout() {
   return (
-    <div>
+    <div className="d-flex flex-column vh-100 ">
       <NavBar />
-      <div className=" d-flex   overflow-hidden vh-100 ">
-        <div className=" ">
-          <SideBar />
-        </div>
-        <div className=" w-100   ">
-          <div className="container-fluid overflow-auto">
-            <Outlet />
-          </div>
+      <div className="d-flex overflow-hidden   ">
+        <SideBar />
+        <div className="w-100 overflow-auto p-3">
+          <Outlet />
         </div>
       </div>
     </div>

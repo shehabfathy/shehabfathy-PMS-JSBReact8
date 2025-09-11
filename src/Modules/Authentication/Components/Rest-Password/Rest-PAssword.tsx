@@ -7,7 +7,7 @@ import {
   PASSWORD_VALIDATION,
   SEED_VALIDATION,
 } from "../../../Shared-Components/Components/utils/formValidation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { useState } from "react";
@@ -29,15 +29,15 @@ export default function RestPassword() {
   };
   const onSubmit = async (value: ResetFormValues) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `https://upskilling-egypt.com:3003/api/v1/Users/Reset`,
         value
       );
       toast.success("Password reset successful. Please login");
       navigate(ROUTES.LOGIN);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Something went wrong!");
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -51,7 +51,7 @@ export default function RestPassword() {
             </div>
 
             <div className="p-4 form-container rounded-4 w-100 auth-form">
-              <div className="title mb-5">
+              <div className="title mb-3">
                 <span className="text-white">Welcome to PMS</span>
                 <h4>
                   <span style={{ textDecoration: "underline" }}>R</span>eset

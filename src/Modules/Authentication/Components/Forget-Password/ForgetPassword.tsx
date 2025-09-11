@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { emailValidation } from "../../../Shared-Components/Components/utils/formValidation";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
@@ -21,15 +21,15 @@ export default function ForgetPassword() {
 
   const onSubmit = async (value: ForgetFormValues) => {
     try {
-      const Response = await axios.post(
+      await axios.post(
         `https://upskilling-egypt.com:3003/api/v1/Users/Reset/Request`,
         value
       );
       toast.success("Verification code sent to your email");
       navigate(ROUTES.RESET_PASSWORD);
-    } catch (error: any) {
-      const message = error.response?.data?.message;
-      toast.error(message);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message);
     }
   };
 
@@ -43,7 +43,7 @@ export default function ForgetPassword() {
             </div>
 
             <div className="p-4 form-container rounded-4 w-100 auth-form">
-              <div className="title mb-5">
+              <div className="title mb-3">
                 <span className="text-white">Welcome to PMS</span>
                 <h4>
                   <span style={{ textDecoration: "underline" }}>F</span>orget
@@ -66,10 +66,14 @@ export default function ForgetPassword() {
                 {errors.email && (
                   <div className="text-danger mb-3">{errors.email.message}</div>
                 )}
-
+                <div className=" mb-3">
+                  <Link to={ROUTES.LOGIN} className="link ">
+                    Back to Login
+                  </Link>
+                </div>
                 <button
                   type="submit"
-                  className="btn mx-auto d-block w-75 rounded-5 mt-5 border-0 btn-submit"
+                  className="btn mx-auto d-block w-75 rounded-5  border-0 btn-submit"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import Button from "../../../Shared-Components/Components/Button/Button";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type FormValues = {
   title: string;
@@ -17,9 +19,23 @@ export default function Projects_Data() {
   } = useForm<FormValues>();
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
+
+    // Retrieve the token from local storage.
+    const token = localStorage.getItem("token");
+
+    // If there's no token, log an error and stop the process.
+    if (!token) {
+      console.error("Authentication Error: No token found in local storage.");
+      toast.error("Authentication Error: No token found.");
+      setLoading(false);
+      // Optionally, you could show an error message to the user here.
+      return;
+    }
+
     try {
       const response = await axios.post(
         "https://upskilling-egypt.com:3003/api/v1/Project",
@@ -28,14 +44,23 @@ export default function Projects_Data() {
           headers: {
             accept: "application/json",
             "Content-Type": "application/json",
+            // Include the token in the Authorization header.
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       console.log("Project created:", response.data);
+      toast.success("Project created successfully!");
       reset();
+      navigate("/dashboard/project-list");
     } catch (error) {
-      console.error(error);
+      console.error("Error creating project:", error);
+      toast.error("Error creating project. Please try again.");
+      // You can add more specific error handling here, e.g., show a message to the user.
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error details:", error.response?.data);
+      }
     } finally {
       setLoading(false);
     }
@@ -130,8 +155,12 @@ export default function Projects_Data() {
 
             {/* Buttons */}
             <div className="d-flex justify-content-between">
-              <Button type="secondary" disabled={loading}>
-                Reset
+              <Button
+                type="secondary"
+                disabled={loading}
+                to="/dashboard/project-list"
+              >
+                Cancel
               </Button>
               <Button type="primary" disabled={loading}>
                 {loading ? "Creating..." : "Create Project"}

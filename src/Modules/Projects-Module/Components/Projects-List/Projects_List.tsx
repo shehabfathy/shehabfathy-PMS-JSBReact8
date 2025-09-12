@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import Pagination from "@mui/material/Pagination";
@@ -9,13 +9,18 @@ import Menu from "@mui/material/Menu";
 import MenuItemMUI from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Badge from "react-bootstrap/Badge"; // 👈 Import Badge
-import axiosInstance from "../../../Shared-Components/api/authInstance";
+import Badge from "react-bootstrap/Badge";
+import axios from "axios"; // Using a generic axios for the example
 import { Modal, Button } from "react-bootstrap";
-import DeleteConfirmation from "../../../Shared-Components/Components/Deleted-Confirmation/Deleted-Confirmation"; // Adjust path
 import { toast } from "react-toastify";
+import DeleteConfirmation from "../../../Shared-Components/Components/Deleted-Confirmation/Deleted-Confirmation";
+import { ClipLoader } from "react-spinners";
+
+// Placeholder for axios instance
+const axiosInstance = axios.create({
+  baseURL: "https://upskilling-egypt.com:3003/api/v1",
+});
 
 export default function Projects_List() {
   const navigate = useNavigate();
@@ -33,13 +38,19 @@ export default function Projects_List() {
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // Use React state for selectedProjectId
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
 
+  // State for modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewProjectDetails, setViewProjectDetails] = useState<Project | null>(
+    null
+  );
+
   const open = Boolean(anchorEl);
 
   const formatDate = (dateString: string) => {
@@ -70,16 +81,20 @@ export default function Projects_List() {
     setSelectedProjectId(null);
   };
 
-  const handleCreate = () => {
-    navigate("/dashboard/recipes-data"); // Adjust route as needed
+  const handleView = () => {
+    if (selectedProjectId) {
+      const projectToView = projects.find((p) => p.id === selectedProjectId);
+      if (projectToView) {
+        setViewProjectDetails(projectToView);
+        setShowViewModal(true);
+      }
+    }
     handleMenuClose();
   };
 
-  const handleUpdate = () => {
-    if (selectedProjectId) {
-      navigate(`/dashboard/recipes-data/${selectedProjectId}`);
-    }
-    handleMenuClose();
+  const handleCloseViewModal = () => {
+    setShowViewModal(false);
+    setViewProjectDetails(null);
   };
 
   const handleCloseDelete = () => {
@@ -89,12 +104,12 @@ export default function Projects_List() {
 
   const handleDelete = async () => {
     if (!projectToDelete) return;
-
+    setLoading(true);
     try {
+      const token = localStorage.getItem("token");
       await axiosInstance.delete(`/Project/${projectToDelete}`, {
         headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5Niwicm9sZXMiOlsiTWFuYWdlciIsImNhbkFkZFVzZXIiLCJjYW5VcGRhdGVVc2VyIiwiY2FuRGVsZXRlVXNlciIsImNhbkdldFVzZXJCeUlkIiwiY2FuR2V0Q3VycmVudFVzZXIiLCJjYW5HZXRBbGxVc2VycyIsImNhbkNoYW5nZVBhc3N3b3JkIl0sInVzZXJOYW1lIjoibmFkaWE0MjMiLCJ1c2VyRW1haWwiOiJuYWRpYS5tb2hhbWVkLnRhaGExNjZAZ21haWwuY29tIiwidXNlckdyb3VwIjoiTWFuYWdlciIsImlhdCI6MTc1NzQxODIyNywiZXhwIjoxNzYxMDE4MjI3fQ.AB17TD2QE3wIfqgkD-wRymmCYbyA8obNNxk_NfSnF-6BDpEVHGewcfNkYS1TD7VYIaB3K4Mk_ANVR4uUNBrF3minUAJFMYTvmG6N6JAAITvXq3XqgnObi22fWluRe9ATqDNLmFd2KfktjTRVLhRYBELVXXDBJIdOYTHP1VhqY2hsYzyxEXe7YgI_mfv4Kh8JGpaUYmP40x2BYRLXiydt1s2oVVnelvZEK0xr98MNNFjyLuOJ7sfqVU68ltY3s0O0LbhsFzv8al1WuFC8yOiQr96_Ys2S9W7YqNcIoo-_HJyme-08c3Or1kq3qAkB-39dyVIHXqE8ilDl5lLTtlXp1g",
+          Authorization: `Bearer ${token}`,
         },
       });
       toast.success("Project deleted successfully!");
@@ -102,18 +117,30 @@ export default function Projects_List() {
       fetchProjects(); // Refresh list
     } catch (error) {
       console.error("Error deleting project:", error);
-      alert("Failed to delete project.");
+      toast.error("Failed to delete project.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchProjects = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Authentication Error: No token found in local storage.");
+      toast.error("Authentication Error: No token found.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await axiosInstance.get(
         `/Project/?pageSize=${pageSize}&pageNumber=${page}`,
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5Niwicm9sZXMiOlsiTWFuYWdlciIsImNhbkFkZFVzZXIiLCJjYW5VcGRhdGVVc2VyIiwiY2FuRGVsZXRlVXNlciIsImNhbkdldFVzZXJCeUlkIiwiY2FuR2V0Q3VycmVudFVzZXIiLCJjYW5HZXRBbGxVc2VycyIsImNhbkNoYW5nZVBhc3N3b3JkIl0sInVzZXJOYW1lIjoibmFkaWE0MjMiLCJ1c2VyRW1haWwiOiJuYWRpYS5tb2hhbWVkLnRhaGExNjZAZ21haWwuY29tIiwidXNlckdyb3VwIjoiTWFuYWdlciIsImlhdCI6MTc1NzMxMzYyMSwiZXhwIjoxNzYwOTEzNjIxfQ.C-HMYlm5pJc9wgjlDUz7FCJ5wfX8SvmkW5ZXVYllgx6MugDPtojJJiloy2-hUhcrrUQFPovZxr-2bL2I6gZnI_5R11VadE3yMk_XD-wsohQT1J0W2TAH3U_q09aITlsf7DteVCId9t7tMkC-bZgQXK1FpdFcAJYjVS_d8_3Nzm26P9Vsvu3K_LH8gQSW3_4pLWqN2PpZ7RW1OUD4U-QFuW6PeVQdfYw-gfjxbFkR9BGILQTCR29QMuCcXwK1FPknHEDjFHZcPYHREkLxFUOUzAaAAAg6accvNnqz_FcmpVgBHyIG7yC0ayKxzJ8UGbXDNlhKdW1tE4L5k8UYpk-pbg",
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -123,6 +150,9 @@ export default function Projects_List() {
       setTotalRecords(res.data.totalNumberOfRecords);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch projects.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -130,15 +160,15 @@ export default function Projects_List() {
     fetchProjects();
   }, [page, pageSize]);
 
-  const headerStyle = {
+  const headerStyle: React.CSSProperties = {
     backgroundColor: "rgba(49, 89, 81, 0.9)",
     color: "#fff",
     border: "1px solid rgba(0,0,0,0.2)",
-    fontWeight: "400",
+    fontWeight: 400,
     padding: "1rem",
   };
 
-  const cellPadding = {
+  const cellPadding: React.CSSProperties = {
     padding: "1rem",
   };
 
@@ -172,7 +202,7 @@ export default function Projects_List() {
             border: "1px solid #EF9B28",
             cursor: "pointer",
             padding: "6px 16px",
-            fontWeight: "500",
+            fontWeight: 500,
           }}
           onClick={() => navigate("/dashboard/project-data")}
           className="d-flex align-items-center"
@@ -185,145 +215,148 @@ export default function Projects_List() {
       {/* Table Section */}
       <div style={{ padding: "1rem", marginTop: "1rem" }}>
         <div
-          className="table-container"
+          className="table-container text-center"
           style={{
             background: "#fff",
             borderRadius: "12px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
             padding: "1rem",
+            position: "relative",
+            minHeight: "50vh",
           }}
         >
-          <Table striped hover responsive>
-            <thead className="text-center">
-              <tr>
-                <th style={headerStyle}>Title</th>
-                <th style={headerStyle}>Status</th>
-                <th style={headerStyle}>Created At</th>
-                <th style={headerStyle}>Description</th>
-                <th style={headerStyle}>Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-center">
-              {projects.length > 0 ? (
-                projects.map((project, index) => (
-                  <tr key={project.id || index}>
-                    <td style={cellPadding}>{project.title}</td>
-                    <td style={cellPadding}>
-                      <Badge
-                        bg=""
-                        style={{
-                          backgroundColor: "#315951E5",
-                          padding: "0.5rem 1rem",
-                          borderRadius: "20px",
-                          fontSize: "0.9rem",
-                          fontWeight: "300",
-                        }}
-                        className="text-white"
-                      >
-                        Active
-                      </Badge>
-                    </td>
-                    <td style={cellPadding}>
-                      {formatDate(project.creationDate)}
-                    </td>
-                    <td style={cellPadding}>{project.description}</td>
-                    <td style={cellPadding}>
-                      <IconButton
-                        onClick={(e) => handleMenuOpen(e, project.id)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                    </td>
+          {loading ? (
+            <ClipLoader />
+          ) : (
+            <>
+              <Table striped hover responsive>
+                <thead className="text-center">
+                  <tr>
+                    <th style={headerStyle}>Title</th>
+                    <th style={headerStyle}>Status</th>
+                    <th style={headerStyle}>Created At</th>
+                    <th style={headerStyle}>Description</th>
+                    <th style={headerStyle}>Actions</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td style={cellPadding} colSpan={5}>
-                    No projects found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody className="text-center">
+                  {projects.length > 0 ? (
+                    projects.map((project, index) => (
+                      <tr key={project.id || index}>
+                        <td style={cellPadding}>{project.title}</td>
+                        <td style={cellPadding}>
+                          <Badge
+                            bg=""
+                            style={{
+                              backgroundColor: "#315951E5",
+                              padding: "0.5rem 1rem",
+                              borderRadius: "20px",
+                              fontSize: "0.9rem",
+                              fontWeight: 300,
+                            }}
+                            className="text-white"
+                          >
+                            Active
+                          </Badge>
+                        </td>
+                        <td style={cellPadding}>
+                          {formatDate(project.creationDate)}
+                        </td>
+                        <td style={cellPadding}>{project.description}</td>
+                        <td style={cellPadding}>
+                          <IconButton
+                            onClick={(e) => handleMenuOpen(e, project.id)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td style={cellPadding} colSpan={5}>
+                        No projects found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
 
-          {/* Dropdown Menu */}
-          <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-            <MenuItemMUI onClick={handleCreate}>
-              <VisibilityIcon fontSize="small" style={{ marginRight: 8 }} />
-              View
-            </MenuItemMUI>
+              {/* Dropdown Menu */}
+              <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+                <MenuItemMUI onClick={handleView}>
+                  <VisibilityIcon fontSize="small" style={{ marginRight: 8 }} />
+                  View
+                </MenuItemMUI>
 
-            <MenuItemMUI onClick={handleUpdate}>
-              <EditIcon fontSize="small" style={{ marginRight: 8 }} />
-              Update
-            </MenuItemMUI>
-
-            <MenuItemMUI
-              onClick={() => {
-                handleMenuClose();
-                if (selectedProjectId) {
-                  setProjectToDelete(selectedProjectId);
-                  setShowDeleteModal(true);
-                }
-              }}
-              sx={{ color: "error.main" }}
-            >
-              <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />
-              Delete
-            </MenuItemMUI>
-          </Menu>
-
-          {/* Pagination */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: "1rem",
-              gap: "0.75rem",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "1.5rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={(_, value) => setPage(value)}
-                variant="outlined"
-                shape="rounded"
-              />
-
-              <FormControl size="small" style={{ minWidth: 100 }}>
-                <Select<number>
-                  value={pageSize}
-                  onChange={handlePageSizeChange}
+                <MenuItemMUI
+                  onClick={() => {
+                    handleMenuClose();
+                    if (selectedProjectId) {
+                      setProjectToDelete(selectedProjectId);
+                      setShowDeleteModal(true);
+                    }
+                  }}
+                  sx={{ color: "error.main" }}
                 >
-                  {[...Array(10)].map((_, i) => (
-                    <MenuItem key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
+                  <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />
+                  Delete
+                </MenuItemMUI>
+              </Menu>
 
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>
-              Page <strong>{page}</strong> of <strong>{totalPages}</strong> |
-              Showing <strong>{pageSize}</strong> per page | Total Records:{" "}
-              <strong>{totalRecords}</strong>
-            </p>
-          </div>
+              {/* Pagination */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                  gap: "0.75rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "1.5rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Pagination
+                    count={totalPages}
+                    page={page}
+                    onChange={(_, value) => setPage(value)}
+                    variant="outlined"
+                    shape="rounded"
+                  />
+
+                  <FormControl size="small" style={{ minWidth: 100 }}>
+                    <Select<number>
+                      value={pageSize}
+                      onChange={handlePageSizeChange}
+                    >
+                      {[...Array(10)].map((_, i) => (
+                        <MenuItem key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+
+                <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>
+                  Page <strong>{page}</strong> of <strong>{totalPages}</strong>{" "}
+                  | Showing <strong>{pageSize}</strong> per page | Total
+                  Records: <strong>{totalRecords}</strong>
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* 🔥 Modal OUTSIDE table-container */}
+      {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton />
         <Modal.Body>
@@ -335,6 +368,34 @@ export default function Projects_List() {
           </Button>
           <Button variant="danger" onClick={handleDelete}>
             Yes, Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* View Details Modal */}
+      <Modal show={showViewModal} onHide={handleCloseViewModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Project Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {viewProjectDetails ? (
+            <div>
+              <h5>{viewProjectDetails.title}</h5>
+              <p>
+                <strong>Description:</strong> {viewProjectDetails.description}
+              </p>
+              <p>
+                <strong>Created On:</strong>{" "}
+                {formatDate(viewProjectDetails.creationDate)}
+              </p>
+            </div>
+          ) : (
+            <p>No details available.</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseViewModal}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

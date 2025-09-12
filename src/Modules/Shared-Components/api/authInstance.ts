@@ -31,6 +31,11 @@ export const authUrl = {
 
 export const taskUrl = {
   count: `/Task/count`,
+  getAllManager: `/Task/manager`,
+  AllTasksEmployee: `/Task`,
+  createTask: `/Task`,
+  updateTask: (id: number) => `/Task/${id}`,
+  deleteTask: (id: number) => `/Task/${id}`,
 };
 
 export const userUrl = {

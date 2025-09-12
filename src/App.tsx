@@ -5,6 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// Make sure this file is updated as shown above
 import { ROUTES } from "../src/Modules/Shared-Components/Components/routes/routes";
 
 // Pages & Layouts
@@ -33,7 +34,7 @@ function App() {
       element: <AuthLayout />,
       errorElement: <NotFound />,
       children: [
-        { index: true, element: <Login /> }, // Default to Login
+        { index: true, element: <Login /> },
         { path: ROUTES.LOGIN.slice(1), element: <Login /> },
         { path: ROUTES.REGISTER.slice(1), element: <Register /> },
         { path: ROUTES.FORGET_PASSWORD.slice(1), element: <ForgetPassword /> },
@@ -48,18 +49,20 @@ function App() {
         <ProtectedRoute>
           <MasterLayout />
         </ProtectedRoute>
-      ), // No ProtectedRoute
+      ),
       errorElement: <NotFound />,
       children: [
+        // FIX 2: Removed redundant dashboard path. The 'index' route is enough.
         { index: true, element: <Dashboard /> },
-        { path: ROUTES.DASHBOARD.slice(1), element: <Dashboard /> },
         { path: ROUTES.Users.slice(1), element: <User /> },
         { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
         { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
         { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
+        // This route handles creating a task
         { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
-
-        // Add more open routes here
+        // FIX 1: ADDED a new route to handle updating a task
+        // It uses the same Tasks_Data component, which is what we want.
+        { path: ROUTES.Tasks_Update.slice(1), element: <Tasks_Data /> },
       ],
     },
   ]);

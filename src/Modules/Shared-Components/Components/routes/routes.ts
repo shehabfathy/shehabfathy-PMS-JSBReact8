@@ -12,5 +12,6 @@ export const ROUTES = {
   Projects_Data: "/project-data",
   Tasks_List: "/task-list",
   Tasks_Data: "/task-data",
+  Tasks_Update: "/task-data/:taskId",
   Users: "/user",
 };

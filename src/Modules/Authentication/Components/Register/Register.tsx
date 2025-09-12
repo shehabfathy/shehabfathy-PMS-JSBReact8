@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { emailValidation } from "../../../../../src/Modules/Shared-Components/Components/utils/formValidation";
 import axiosInstance from "../../../Shared-Components/api/authInstance"; // adjust path
 import { ClipLoader } from "react-spinners";
+import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 
 // ✅ Define types for form fields
 interface RegisterFormInputs {
@@ -284,6 +285,9 @@ function Register() {
                         </p>
                       )}
                     </div>
+                    <Link to={ROUTES.LOGIN} className="link">
+                      Login Now ?
+                    </Link>
                   </div>
                 </div>
                 <button

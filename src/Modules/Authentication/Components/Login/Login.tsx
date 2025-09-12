@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 import logo from "../../../../assets/auth-logo.svg";
 import { useForm } from "react-hook-form";
+import "./Login.modules.css";
 import {
   emailValidation,
   PASSWORD_VALIDATION,
@@ -53,7 +54,7 @@ export default function Login() {
             </div>
 
             <div className="p-4 form-container rounded-4 w-100 auth-form">
-              <div className="title mb-5">
+              <div className="title mb-3">
                 <span className="text-white">Welcome to PMS</span>
                 <h4>
                   <span style={{ textDecoration: "underline" }}>L</span>ogin
@@ -77,11 +78,11 @@ export default function Login() {
                 )}
 
                 <label>Password</label>
-                <div className="position-relative">
+                <div className="position-relative mb-2">
                   <input
                     {...register("password", PASSWORD_VALIDATION)}
                     type={Show ? "text" : "password"}
-                    className="form-control pe-5"
+                    className="form-control pe-5 "
                     placeholder="Enter your password"
                     autoComplete="new-password"
                   />

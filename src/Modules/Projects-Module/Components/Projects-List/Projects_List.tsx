@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import Pagination from "@mui/material/Pagination";
@@ -11,19 +11,24 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Badge from "react-bootstrap/Badge";
-import axios from "axios"; // Using a generic axios for the example
+// import axios from "axios"; // Using a generic axios for the example
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared-Components/Components/Deleted-Confirmation/Deleted-Confirmation";
 import { ClipLoader } from "react-spinners";
+import { AuthContext } from "../../../../Context/AuthContext";
+import axiosInstance, {
+  projectUrl,
+} from "../../../Shared-Components/api/authInstance";
 
 // Placeholder for axios instance
-const axiosInstance = axios.create({
-  baseURL: "https://upskilling-egypt.com:3003/api/v1",
-});
+// const axiosInstance = axios.create({
+//   baseURL: `https://upskilling-egypt.com:3003/api/v1${loginData?.userGroup === "Manager" ? "/Project/manager" : "/Project/employee"}`,
+// });
 
 export default function Projects_List() {
   const navigate = useNavigate();
+  const { loginData } = useContext(AuthContext);
 
   interface Project {
     id: string;
@@ -136,13 +141,11 @@ export default function Projects_List() {
 
     try {
       const res = await axiosInstance.get(
-        `/Project/?pageSize=${pageSize}&pageNumber=${page}`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${
+          loginData?.userGroup === "Manager"
+            ? projectUrl.AllProjectsManager
+            : projectUrl.AllProjectsEmployee
+        }?page=${page}&pageSize=${pageSize}`
       );
 
       setProjects(res.data.data || []);
@@ -172,6 +175,8 @@ export default function Projects_List() {
     padding: "1rem",
   };
 
+  console.log(loginData);
+
   return (
     <div style={{ backgroundColor: "#F5F5F5", minHeight: "100vh" }}>
       {/* Header */}
@@ -193,23 +198,25 @@ export default function Projects_List() {
         >
           Projects
         </h2>
-        <button
-          style={{
-            backgroundColor: "#EF9B28",
-            borderColor: "#EF9B28",
-            borderRadius: "18px",
-            color: "#fff",
-            border: "1px solid #EF9B28",
-            cursor: "pointer",
-            padding: "6px 16px",
-            fontWeight: 500,
-          }}
-          onClick={() => navigate("/dashboard/project-data")}
-          className="d-flex align-items-center"
-        >
-          <span style={{ fontSize: "1.5rem", marginRight: "5px" }}>+</span>
-          Add New Project
-        </button>
+        {loginData?.userGroup === "Manager" && (
+          <button
+            style={{
+              backgroundColor: "#EF9B28",
+              borderColor: "#EF9B28",
+              borderRadius: "18px",
+              color: "#fff",
+              border: "1px solid #EF9B28",
+              cursor: "pointer",
+              padding: "6px 16px",
+              fontWeight: 500,
+            }}
+            onClick={() => navigate("/dashboard/project-data")}
+            className="d-flex align-items-center"
+          >
+            <span style={{ fontSize: "1.5rem", marginRight: "5px" }}>+</span>
+            Add New Project
+          </button>
+        )}
       </div>
 
       {/* Table Section */}
@@ -236,7 +243,9 @@ export default function Projects_List() {
                     <th style={headerStyle}>Status</th>
                     <th style={headerStyle}>Created At</th>
                     <th style={headerStyle}>Description</th>
-                    <th style={headerStyle}>Actions</th>
+                    {loginData?.userGroup === "Manager" && (
+                      <th style={headerStyle}>Actions</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="text-center">
@@ -263,13 +272,15 @@ export default function Projects_List() {
                           {formatDate(project.creationDate)}
                         </td>
                         <td style={cellPadding}>{project.description}</td>
-                        <td style={cellPadding}>
-                          <IconButton
-                            onClick={(e) => handleMenuOpen(e, project.id)}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                        </td>
+                        {loginData?.userGroup === "Manager" && (
+                          <td style={cellPadding}>
+                            <IconButton
+                              onClick={(e) => handleMenuOpen(e, project.id)}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                          </td>
+                        )}
                       </tr>
                     ))
                   ) : (

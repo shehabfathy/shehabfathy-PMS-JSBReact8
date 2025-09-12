@@ -1,15 +1,29 @@
 // src/api/axiosInstance.ts
 import axios from "axios";
+
 export const imgUrl = `https://upskilling-egypt.com:3006/`;
-const token = localStorage.getItem("token");
+
 const axiosInstance = axios.create({
-  baseURL: "https://upskilling-egypt.com:3003/api/v1", // ✅ Your API base URL
+  baseURL: "https://upskilling-egypt.com:3003/api/v1", // ✅ API base URL
   headers: {
     Accept: "application/json",
-    Authorization: token ? `Bearer ${token}` : "",
   },
   withCredentials: false, // Change to true if you need cookies
 });
+
+// 🔑 Inject the latest token into every request dynamically
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      delete config.headers.Authorization; // cleanup if no token
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const authUrl = {
   login: `/Users/Login`,
@@ -18,6 +32,7 @@ export const authUrl = {
 export const taskUrl = {
   count: `/Task/count`,
 };
+
 export const userUrl = {
   count: `/Users/count`,
   AllUser: `/Users/Manager`,
@@ -25,7 +40,15 @@ export const userUrl = {
   filterUser: `/Users/`,
 };
 
-// Optional: Add interceptors to log requests & responses
+export const projectUrl = {
+  count: `/Projects/count`,
+  AllProjectsManager: `/Project/manager`,
+  AllProjectsEmployee: `/Project/employee`,
+  ActivateProject: (id: number) => `/Projects/${id}`,
+  filterProject: `/Projects/`,
+};
+
+// Optional: log API responses & errors
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

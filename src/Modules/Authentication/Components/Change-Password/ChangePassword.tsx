@@ -31,7 +31,6 @@ export default function ChangePassword() {
       toast.success("Password changed successful. Please login");
       navigate(ROUTES.LOGIN);
     } catch (error: any) {
-      console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong!");
     }
   };

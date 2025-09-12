@@ -5,13 +5,20 @@ import { useState } from "react";
 import logo from "../../../../assets/auth-logo.svg";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { emailValidation } from "../../../../../src/Modules/Shared-Components/Components/utils/formValidation";
+import {
+  COUNTRY_VALIDATION,
+  emailValidation,
+  PASSWORD_VALIDATION,
+  PHONENUMBER_VALIDATION,
+  USERNAME_VALIDATION,
+} from "../../../../../src/Modules/Shared-Components/Components/utils/formValidation";
 import axiosInstance from "../../../Shared-Components/api/authInstance"; // adjust path
 import { ClipLoader } from "react-spinners";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 
 // ✅ Define types for form fields
-interface RegisterFormInputs {
+
+export type RegisterFormInputs = {
   userName: string;
   email: string;
   country: string;
@@ -19,13 +26,10 @@ interface RegisterFormInputs {
   password: string;
   confirmPassword: string;
   profileImage?: FileList; // Add profileImage as optional FileList
-}
+};
 
 function Register() {
-  const [showPassword, setShowPassword] = useState<{
-    password: boolean;
-    confirm: boolean;
-  }>({
+  const [Show, setShow] = useState({
     password: false,
     confirm: false,
   });
@@ -38,7 +42,6 @@ function Register() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormInputs>();
-
   const handleRegister: SubmitHandler<RegisterFormInputs> = async (
     formData
   ) => {
@@ -56,14 +59,11 @@ function Register() {
       }
 
       const response = await axiosInstance.post("/Users/Register", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("📩 API Response:", response.data);
       toast.success("✅ Registered Successfully!");
-      navigate("/verify-account");
+      navigate("/verify-account", { state: formData.email });
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
       const errorMsg =
@@ -119,12 +119,10 @@ function Register() {
                       <label>User Name</label>
                       <div className="input-group">
                         <input
+                          {...register("userName", USERNAME_VALIDATION)}
                           type="text"
                           className="form-control"
                           placeholder="Username"
-                          {...register("userName", {
-                            required: "User name is required",
-                          })}
                         />
                       </div>
                       {errors.userName && (
@@ -142,9 +140,7 @@ function Register() {
                           type="text"
                           className="form-control"
                           placeholder="Country"
-                          {...register("country", {
-                            required: "Country is required",
-                          })}
+                          {...register("country", COUNTRY_VALIDATION)}
                         />
                       </div>
                       {errors.country && (
@@ -155,49 +151,43 @@ function Register() {
                     </div>
 
                     {/* Password */}
-                    <div className="mb-3">
-                      <label>Password</label>
+                    <label>Password</label>
+                    <div className="position-relative mb-2">
                       <div className="input-group">
                         <input
-                          type={showPassword.password ? "text" : "password"}
+                          {...register("password", PASSWORD_VALIDATION)}
+                          type={Show.password ? "text" : "password"}
+                          className="form-control pe-5 "
+                          placeholder="Enter your password"
                           autoComplete="new-password"
-                          className="form-control"
-                          placeholder="Password"
-                          {...register("password", {
-                            required: "Password is required",
-                            minLength: {
-                              value: 6,
-                              message: "Password must be at least 6 characters",
-                            },
-                          })}
                         />
 
                         <button
                           type="button"
                           onClick={() =>
-                            setShowPassword((prev) => ({
+                            setShow((prev) => ({
                               ...prev,
                               password: !prev.password,
                             }))
                           }
                           className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: "pointer", zIndex: "10" }}
                         >
                           <i
                             className={
-                              showPassword.password
+                              Show.password
                                 ? "fa-solid fa-eye"
                                 : "fa-solid fa-eye-slash"
                             }
                           ></i>
                         </button>
                       </div>
-                      {errors.password && (
-                        <p className="text-danger small ">
-                          {errors.password.message}
-                        </p>
-                      )}
                     </div>
+                    {errors.password && (
+                      <p className="text-danger small ">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
 
                   {/* Right Column */}
@@ -228,13 +218,7 @@ function Register() {
                           type="text"
                           className="form-control"
                           placeholder="Phone"
-                          {...register("phoneNumber", {
-                            required: "Phone is required",
-                            minLength: {
-                              value: 10,
-                              message: "Phone must be at least 10 digits",
-                            },
-                          })}
+                          {...register("phoneNumber", PHONENUMBER_VALIDATION)}
                         />
                       </div>
                       {errors.phoneNumber && (
@@ -245,49 +229,50 @@ function Register() {
                     </div>
 
                     {/* Confirm Password */}
-                    <div className="mb-3">
-                      <label>Confirm Password</label>
-                      <div className="input-group">
-                        <input
-                          type={showPassword.confirm ? "text" : "password"}
-                          className="form-control"
-                          placeholder="Confirm Password"
-                          {...register("confirmPassword", {
-                            required: "Please confirm your password",
-                            validate: (value) =>
-                              value === watch("password") ||
-                              "Passwords do not match",
-                          })}
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowPassword((prev) => ({
-                              ...prev,
-                              confirm: !prev.confirm,
-                            }))
+                    <label>Confirm Password</label>
+                    <div className="position-relative mb-2">
+                      <input
+                        type={Show.confirm ? "text" : "password"}
+                        className="form-control pe-5 "
+                        placeholder="Confirm Password"
+                        // autoComplete="new-password"
+                        {...register("confirmPassword", {
+                          required: "Please confirm your password",
+                          validate: (value) =>
+                            value === watch("password") ||
+                            "Passwords do not match",
+                        })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShow((prev) => ({
+                            ...prev,
+                            confirm: !prev.confirm,
+                          }))
+                        }
+                        className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
+                        style={{ cursor: "pointer", zIndex: "10" }}
+                      >
+                        <i
+                          className={
+                            Show.confirm
+                              ? "fa-solid fa-eye"
+                              : "fa-solid fa-eye-slash"
                           }
-                          className="position-absolute top-50 end-0 translate-middle-y bg-transparent border-0 text-light me-2"
-                          style={{ cursor: "pointer" }}
-                        >
-                          <i
-                            className={
-                              showPassword.confirm
-                                ? "fa-solid fa-eye"
-                                : "fa-solid fa-eye-slash"
-                            }
-                          ></i>
-                        </button>
-                      </div>
-                      {errors.confirmPassword && (
-                        <p className="text-danger small ">
-                          {errors.confirmPassword.message}
-                        </p>
-                      )}
+                        ></i>
+                      </button>
                     </div>
-                    <Link to={ROUTES.LOGIN} className="link">
-                      Login Now ?
-                    </Link>
+                    {errors.confirmPassword && (
+                      <p className="text-danger small ">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
+                    <div className="  text-end ">
+                      <Link to={ROUTES.LOGIN} className="link ">
+                        Login Now ?
+                      </Link>
+                    </div>
                   </div>
                 </div>
                 <button

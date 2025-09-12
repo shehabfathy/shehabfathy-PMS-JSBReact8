@@ -1,20 +1,22 @@
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import logo from "../../../../assets/auth-logo.svg";
 import axiosInstance from "../../../Shared-Components/api/authInstance"; // adjust path
 import { ClipLoader } from "react-spinners";
+import { emailValidation } from "../../../Shared-Components/Components/utils/formValidation";
 
 // ✅ Types for form inputs
-interface VerifyAccountInputs {
+export type VerifyAccountInputs = {
   email: string;
   code: string;
-}
+};
 
 function VerifyAccount() {
   const navigate = useNavigate();
+  let { state } = useLocation({});
   const {
     register,
     handleSubmit,
@@ -66,19 +68,10 @@ function VerifyAccount() {
                     <input
                       type="email"
                       className="form-control"
-                      placeholder="Email"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Enter a valid email",
-                        },
-                      })}
+                      value={state}
+                      disabled={true}
                     />
                   </div>
-                  {errors.email && (
-                    <p className="text-danger small">{errors.email.message}</p>
-                  )}
                 </div>
 
                 {/* Verification Code */}

@@ -14,7 +14,7 @@ import {
 import "./SideBar.modules.css";
 
 export default function SideBar() {
-  const { logOut } = useContext(AuthContext);
+  const { logOut, loginData } = useContext(AuthContext);
   const [iscollapse, setCollapse] = useState(false);
   const location = useLocation();
 
@@ -56,17 +56,19 @@ export default function SideBar() {
           <MenuItem
             active={location.pathname === "/dashboard"}
             icon={<FaHome size={20} />}
-            component={<Link to={ROUTES.DASHBOARD.slice(1)} />}
+            component={<Link to={ROUTES.DASHBOARD} />}
           >
             Home
           </MenuItem>
-          <MenuItem
-            active={location.pathname === "/dashboard/user"}
-            icon={<FaUsers size={20} />}
-            component={<Link to={ROUTES.Users.slice(1)} />}
-          >
-            Users
-          </MenuItem>
+          {loginData?.userGroup == "Manager" && (
+            <MenuItem
+              active={location.pathname === "/dashboard/user"}
+              icon={<FaUsers size={20} />}
+              component={<Link to={ROUTES.Users.slice(1)} />}
+            >
+              Users
+            </MenuItem>
+          )}
           <MenuItem
             active={location.pathname === "/dashboard/project-list"}
             icon={<GrProjects size={20} />}

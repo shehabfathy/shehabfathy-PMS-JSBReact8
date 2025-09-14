@@ -77,9 +77,20 @@ export default function SideBar() {
             Projects
           </MenuItem>
           <MenuItem
-            active={location.pathname === "/dashboard/task-list"}
+            active={
+              location.pathname === "/dashboard/task-list" ||
+              location.pathname === "/dashboard/employee-task"
+            }
             icon={<BsListTask size={20} />}
-            component={<Link to={ROUTES.Tasks_List.slice(1)} />}
+            component={
+              <Link
+                to={
+                  loginData?.userGroup == "Manager"
+                    ? ROUTES.Tasks_List.slice(1)
+                    : ROUTES.EmployeeTask.slice(1)
+                }
+              />
+            }
           >
             Tasks
           </MenuItem>

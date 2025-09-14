@@ -89,8 +89,8 @@ export default function DashBoard() {
 
   return (
     <div className="py-4">
-      <div className="dashboard-header px-3 py-5 rounded-3 mb-4">
-        <div className="header-content py-4">
+      <div className="dashboard-header px-3  rounded-3 ">
+        <div className="header-content  d-flex flex-column justify-content-center h-100">
           <h1 className="text-light">
             Welcome{" "}
             <span style={{ color: "#EF9B28" }}>

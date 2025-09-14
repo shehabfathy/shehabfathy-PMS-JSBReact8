@@ -15,4 +15,5 @@ export const ROUTES = {
   EmployeeTask: "/employee-task",
   Tasks_Update: "/task-data/:taskId",
   Users: "/user",
+  PROFILE: "/profile",
 };

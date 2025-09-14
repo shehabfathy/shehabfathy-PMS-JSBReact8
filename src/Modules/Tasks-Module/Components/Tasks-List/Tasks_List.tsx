@@ -120,7 +120,7 @@ export default function Tasks_List() {
   // 2. Create the handler function for updating
   const handleUpdate = () => {
     if (selectedTaskId) {
-      navigate(`/dashboard/task-data/${selectedTaskId}`);
+      navigate(`dashboard/task-data/${selectedTaskId}`);
     }
     handleMenuClose();
   };
@@ -143,7 +143,7 @@ export default function Tasks_List() {
           ? taskUrl.getAllManager
           : taskUrl.GET_EMPLOYEE_TASKS;
       const res = await axiosInstance.get(
-        `${endpoint}?page=${page}&pageSize=${pageSize}`
+        `{endpoint}?page=${page}&pageSize=${pageSize}`
       );
       setTasks(res.data.data || []);
       setTotalPages(res.data.totalNumberOfPages);
@@ -166,7 +166,7 @@ export default function Tasks_List() {
     if (!taskToDelete) return;
     setLoading(true);
     try {
-      await axiosInstance.delete(`/Task/${taskToDelete}`);
+      await axiosInstance.delete(`Task/${taskToDelete}`);
       toast.success("Task deleted successfully!");
       handleCloseDelete();
       if (tasks.length === 1 && page > 1) {

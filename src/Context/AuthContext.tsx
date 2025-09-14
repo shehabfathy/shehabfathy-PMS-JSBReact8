@@ -10,8 +10,9 @@ type LoginData = {
   userName: string;
   userEmail: string;
   userId: number;
+  userGroup: string; // Add this
+  roles: string[]; // Add this
   exp: number;
-  userGroup: string;
 };
 
 type AuthContextType = {

@@ -134,7 +134,9 @@ const EmployeeTask = () => {
               onDrop={(e) => handleDrop(e, column.id)}
             >
               <div className="card h-100 shadow-sm">
-                <div className="card-header   fw-bold">{column.title}</div>
+                <div className="card-header bg-success text-light">
+                  {column.title}
+                </div>
                 <div
                   className="card-body d-flex flex-column gap-3"
                   style={{

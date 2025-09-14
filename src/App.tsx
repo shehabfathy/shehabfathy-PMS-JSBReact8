@@ -26,12 +26,9 @@ import Projects_List from "./Modules/Projects-Module/Components/Projects-List/Pr
 import Projects_Data from "./Modules/Projects-Module/Components/Projects-Data/Projects_Data";
 import Tasks_List from "./Modules/Tasks-Module/Components/Tasks-List/Tasks_List";
 import Tasks_Data from "./Modules/Tasks-Module/Components/Tasks-Data/Tasks_Data";
-<<<<<<< HEAD
 import UserProfile from "./Modules/Shared-Components/Profile/Profile"; // Import the UserProfile component
-=======
 import { useContext } from "react";
 import EmployeeTask from "./Modules/Tasks-Module/Components/EmployeeTask/EmployeeTask";
->>>>>>> 1403b30410ded9d8daeadce8c9d1fa5916b54beb
 
 function App() {
   const { loginData } = useContext(AuthContext);
@@ -64,8 +61,6 @@ function App() {
         { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
         { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
         { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
-<<<<<<< HEAD
-=======
         {
           path:
             loginData?.userGroup == "Manager"
@@ -79,7 +74,6 @@ function App() {
             ),
         },
         // This route handles creating a task
->>>>>>> 1403b30410ded9d8daeadce8c9d1fa5916b54beb
         { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
         { path: ROUTES.Tasks_Update.slice(1), element: <Tasks_Data /> },
         // Added the new route for the user profile

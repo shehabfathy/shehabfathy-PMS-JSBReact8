@@ -26,6 +26,7 @@ import Projects_List from "./Modules/Projects-Module/Components/Projects-List/Pr
 import Projects_Data from "./Modules/Projects-Module/Components/Projects-Data/Projects_Data";
 import Tasks_List from "./Modules/Tasks-Module/Components/Tasks-List/Tasks_List";
 import Tasks_Data from "./Modules/Tasks-Module/Components/Tasks-Data/Tasks_Data";
+import UserProfile from "./Modules/Shared-Components/Profile/Profile"; // Import the UserProfile component
 
 function App() {
   const routes = createBrowserRouter([
@@ -52,17 +53,15 @@ function App() {
       ),
       errorElement: <NotFound />,
       children: [
-        // FIX 2: Removed redundant dashboard path. The 'index' route is enough.
         { index: true, element: <Dashboard /> },
         { path: ROUTES.Users.slice(1), element: <User /> },
         { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
         { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
         { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
-        // This route handles creating a task
         { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
-        // FIX 1: ADDED a new route to handle updating a task
-        // It uses the same Tasks_Data component, which is what we want.
         { path: ROUTES.Tasks_Update.slice(1), element: <Tasks_Data /> },
+        // Added the new route for the user profile
+        { path: ROUTES.PROFILE.slice(1), element: <UserProfile /> },
       ],
     },
   ]);

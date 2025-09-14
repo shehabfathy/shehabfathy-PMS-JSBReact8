@@ -36,6 +36,8 @@ export const taskUrl = {
   createTask: `/Task`,
   updateTask: (id: number) => `/Task/${id}`,
   deleteTask: (id: number) => `/Task/${id}`,
+  changeStatus: (id: number) => `/Task/${id}/change-status`,
+  filterTask: `/Task/`,
 };
 
 export const userUrl = {

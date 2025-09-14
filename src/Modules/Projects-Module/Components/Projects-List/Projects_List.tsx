@@ -175,8 +175,6 @@ export default function Projects_List() {
     padding: "1rem",
   };
 
-  console.log(loginData);
-
   return (
     <div style={{ backgroundColor: "#F5F5F5", minHeight: "100vh" }}>
       {/* Header */}

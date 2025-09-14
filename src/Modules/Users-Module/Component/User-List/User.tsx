@@ -87,13 +87,22 @@ export default function User() {
   };
 
   useEffect(() => {
-    getAllUser(4, activePage);
+    getAllUser(5, activePage);
     getUser(userId);
   }, [userId, activePage]);
 
   return (
-    <div className="py-2">
-      <h4 className="mb-3">Users</h4>
+    <main className=" vh-100" style={{ backgroundColor: "rgb(245, 245, 245)" }}>
+      <div
+        className=" "
+        style={{
+          backgroundColor: "#fff",
+          fontSize: "28px",
+          fontWeight: "bold",
+        }}
+      >
+        <h4 className="py-4">Users</h4>
+      </div>
       <Modal
         show={show}
         onHide={handleClose}
@@ -269,6 +278,6 @@ export default function User() {
       ) : (
         <NoData />
       )}
-    </div>
+    </main>
   );
 }

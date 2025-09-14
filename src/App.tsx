@@ -19,15 +19,18 @@ import VerifyAcc from "../src/Modules/Authentication/Components/Verify-Account/V
 import ForgetPassword from "./Modules/Authentication/Components/Forget-Password/ForgetPassword";
 import RestPassword from "./Modules/Authentication/Components/Rest-Password/Rest-PAssword";
 import ChangePassword from "./Modules/Authentication/Components/Change-Password/ChangePassword";
-import { AuthContextProvider } from "./Context/AuthContext";
+import { AuthContext } from "./Context/AuthContext";
 import ProtectedRoute from "./Modules/Shared-Components/Components/ProtectedRoute/ProtectedRoute";
 import User from "./Modules/Users-Module/Component/User-List/User";
 import Projects_List from "./Modules/Projects-Module/Components/Projects-List/Projects_List";
 import Projects_Data from "./Modules/Projects-Module/Components/Projects-Data/Projects_Data";
 import Tasks_List from "./Modules/Tasks-Module/Components/Tasks-List/Tasks_List";
 import Tasks_Data from "./Modules/Tasks-Module/Components/Tasks-Data/Tasks_Data";
+import { useContext } from "react";
+import EmployeeTask from "./Modules/Tasks-Module/Components/EmployeeTask/EmployeeTask";
 
 function App() {
+  const { loginData } = useContext(AuthContext);
   const routes = createBrowserRouter([
     {
       path: ROUTES.ROOT,
@@ -58,6 +61,18 @@ function App() {
         { path: ROUTES.Projects_List.slice(1), element: <Projects_List /> },
         { path: ROUTES.Projects_Data.slice(1), element: <Projects_Data /> },
         { path: ROUTES.Tasks_List.slice(1), element: <Tasks_List /> },
+        {
+          path:
+            loginData?.userGroup == "Manager"
+              ? ROUTES.Tasks_List.slice(1)
+              : ROUTES.EmployeeTask.slice(1),
+          element:
+            loginData?.userGroup == "Manager" ? (
+              <Tasks_List />
+            ) : (
+              <EmployeeTask />
+            ),
+        },
         // This route handles creating a task
         { path: ROUTES.Tasks_Data.slice(1), element: <Tasks_Data /> },
         // FIX 1: ADDED a new route to handle updating a task
@@ -69,10 +84,8 @@ function App() {
 
   return (
     <>
-      <AuthContextProvider>
-        <RouterProvider router={routes} />
-        <ToastContainer position="top-right" autoClose={3000} limit={3} />
-      </AuthContextProvider>
+      <RouterProvider router={routes} />
+      <ToastContainer position="top-right" autoClose={3000} limit={3} />
     </>
   );
 }

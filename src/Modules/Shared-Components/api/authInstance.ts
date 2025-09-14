@@ -32,8 +32,9 @@ export const authUrl = {
 export const taskUrl = {
   count: `/Task/count`,
   getAllManager: `/Task/manager`,
-  AllTasksEmployee: `/Task`,
+  GET_EMPLOYEE_TASKS: `/Task?pageSize=50&pageNumber=1`,
   createTask: `/Task`,
+  EDIT_TASKS_BY_EMPLOYEE: (id: number) => `/Task/${id}/change-status`,
   updateTask: (id: number) => `/Task/${id}`,
   deleteTask: (id: number) => `/Task/${id}`,
 };

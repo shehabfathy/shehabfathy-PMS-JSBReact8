@@ -11,6 +11,7 @@ type LoginData = {
   userEmail: string;
   userId: number;
   exp: number;
+  userGroup: string;
 };
 
 type AuthContextType = {
@@ -31,6 +32,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     if (token) {
       try {
         const decoded: LoginData = jwtDecode(token);
+        console.log(decoded);
         setLoginData(decoded);
       } catch (error) {
         const err = error as { message: string };

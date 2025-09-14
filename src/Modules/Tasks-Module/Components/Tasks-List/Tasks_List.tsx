@@ -51,7 +51,6 @@ export default function Tasks_List() {
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewTaskDetails, setViewTaskDetails] = useState<Task | null>(null);
-
   const open = Boolean(anchorEl);
 
   const formatDate = (dateString: string) => {
@@ -89,7 +88,6 @@ export default function Tasks_List() {
       color: "#fff",
     };
   };
-
   const handlePageSizeChange = (event: SelectChangeEvent<number>) => {
     setPageSize(Number(event.target.value));
     setPage(1);

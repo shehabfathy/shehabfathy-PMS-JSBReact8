@@ -3,9 +3,10 @@
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
+  height: 313px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 813px) {
   .header-content h1 {
     font-size: 20px;
   }
@@ -14,9 +15,6 @@
   }
 }
 @media (max-width: 651px) {
-  .header-content {
-    padding: 50px 0 !important;
-  }
   .header-content h1 {
     font-size: 18px;
   }

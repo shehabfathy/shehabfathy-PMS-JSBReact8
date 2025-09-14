@@ -141,7 +141,7 @@ export default function Tasks_List() {
       const endpoint =
         loginData?.userGroup === "Manager"
           ? taskUrl.getAllManager
-          : taskUrl.AllTasksEmployee;
+          : taskUrl.GET_EMPLOYEE_TASKS;
       const res = await axiosInstance.get(
         `${endpoint}?page=${page}&pageSize=${pageSize}`
       );

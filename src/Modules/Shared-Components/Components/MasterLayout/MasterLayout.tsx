@@ -8,7 +8,7 @@ function MasterLayout() {
       <NavBar />
       <div className="d-flex overflow-hidden   ">
         <SideBar />
-        <div className="w-100 overflow-auto">
+        <div className="w-100 container-fluid overflow-auto">
           <Outlet />
         </div>
       </div>

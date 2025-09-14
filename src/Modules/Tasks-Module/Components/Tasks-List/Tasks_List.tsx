@@ -10,7 +10,7 @@ import MenuItemMUI from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit"; // 1. Import the Edit icon
+import EditIcon from "@mui/icons-material/Edit";
 import Badge from "react-bootstrap/Badge";
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -21,25 +21,26 @@ import axiosInstance, {
   taskUrl,
 } from "../../../Shared-Components/api/authInstance";
 
+// ✅ Export Task type for use in SortableTask
+export interface IUserTask {
+  id: string;
+  title: string;
+  description: string;
+  status: "ToDo" | "InProgress" | "Done";
+  project: {
+    title: string;
+  };
+  employee: {
+    userName: string;
+  };
+  creationDate: string;
+}
+
 export default function Tasks_List() {
   const navigate = useNavigate();
   const { loginData } = useContext(AuthContext);
 
-  interface Task {
-    id: string;
-    title: string;
-    description: string;
-    status: "ToDo" | "InProgress" | "Done";
-    project: {
-      title: string;
-    };
-    employee: {
-      userName: string;
-    };
-    creationDate: string;
-  }
-
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<IUserTask[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -50,7 +51,10 @@ export default function Tasks_List() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [viewTaskDetails, setViewTaskDetails] = useState<Task | null>(null);
+  const [viewTaskDetails, setViewTaskDetails] = useState<IUserTask | null>(
+    null
+  );
+
   const open = Boolean(anchorEl);
 
   const formatDate = (dateString: string) => {
@@ -88,6 +92,7 @@ export default function Tasks_List() {
       color: "#fff",
     };
   };
+
   const handlePageSizeChange = (event: SelectChangeEvent<number>) => {
     setPageSize(Number(event.target.value));
     setPage(1);
@@ -117,7 +122,6 @@ export default function Tasks_List() {
     handleMenuClose();
   };
 
-  // 2. Create the handler function for updating
   const handleUpdate = () => {
     if (selectedTaskId) {
       navigate(`dashboard/task-data/${selectedTaskId}`);
@@ -142,9 +146,11 @@ export default function Tasks_List() {
         loginData?.userGroup === "Manager"
           ? taskUrl.getAllManager
           : taskUrl.GET_EMPLOYEE_TASKS;
+
       const res = await axiosInstance.get(
-        `{endpoint}?page=${page}&pageSize=${pageSize}`
+        `${endpoint}?page=${page}&pageSize=${pageSize}`
       );
+
       setTasks(res.data.data || []);
       setTotalPages(res.data.totalNumberOfPages);
       setTotalRecords(res.data.totalNumberOfRecords);
@@ -307,7 +313,7 @@ export default function Tasks_List() {
                 </tbody>
               </Table>
 
-              {/* 3. Add the new "Edit" menu item here */}
+              {/* Actions Menu */}
               <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
                 <MenuItemMUI onClick={handleView}>
                   <VisibilityIcon fontSize="small" style={{ marginRight: 8 }} />
@@ -334,7 +340,7 @@ export default function Tasks_List() {
                 </MenuItemMUI>
               </Menu>
 
-              {/* Pagination and Modals remain the same */}
+              {/* Pagination */}
               <div
                 style={{
                   display: "flex",
@@ -384,6 +390,7 @@ export default function Tasks_List() {
         </div>
       </div>
 
+      {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton />
         <Modal.Body>
@@ -399,6 +406,7 @@ export default function Tasks_List() {
         </Modal.Footer>
       </Modal>
 
+      {/* View Modal */}
       <Modal show={showViewModal} onHide={handleCloseViewModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Task Details</Modal.Title>

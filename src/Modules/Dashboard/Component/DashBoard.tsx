@@ -89,7 +89,7 @@ export default function DashBoard() {
 
   return (
     <div className="py-4">
-      <div className="dashboard-header px-3  rounded-3 ">
+      <div className="dashboard-header    px-3  rounded-3 ">
         <div className="header-content  d-flex flex-column justify-content-center h-100">
           <h1 className="text-light">
             Welcome{" "}

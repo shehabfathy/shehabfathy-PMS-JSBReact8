@@ -124,7 +124,7 @@ export default function Tasks_List() {
 
   const handleUpdate = () => {
     if (selectedTaskId) {
-      navigate(`dashboard/task-data/${selectedTaskId}`);
+      navigate(`/dashboard/task-data/${selectedTaskId}`);
     }
     handleMenuClose();
   };

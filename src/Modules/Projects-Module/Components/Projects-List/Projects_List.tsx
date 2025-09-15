@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import Pagination from "@mui/material/Pagination";
@@ -10,158 +10,171 @@ import MenuItemMUI from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit"; // ✅ Re-added for full functionality
 import Badge from "react-bootstrap/Badge";
-// import axios from "axios"; // Using a generic axios for the example
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import DeleteConfirmation from "../../../Shared-Components/Components/Deleted-Confirmation/Deleted-Confirmation";
 import { ClipLoader } from "react-spinners";
 import { AuthContext } from "../../../../Context/AuthContext";
 import axiosInstance, {
-  projectUrl,
+  taskUrl, // ✅ Using taskUrl for API endpoints
 } from "../../../Shared-Components/api/authInstance";
 
-// Placeholder for axios instance
-// const axiosInstance = axios.create({
-//   baseURL: `https://upskilling-egypt.com:3003/api/v1${loginData?.userGroup === "Manager" ? "/Project/manager" : "/Project/employee"}`,
-// });
+// ✅ Adapted interface for a Task
+interface ITask {
+  id: string;
+  title: string;
+  description: string;
+  status: "ToDo" | "InProgress" | "Done";
+  project: {
+    title: string;
+  };
+  employee: {
+    userName: string;
+  };
+  creationDate: string;
+}
 
-export default function Projects_List() {
+export default function Tasks_List() {
   const navigate = useNavigate();
   const { loginData } = useContext(AuthContext);
 
-  interface Project {
-    id: string;
-    title: string;
-    description: string;
-    creationDate: string;
-  }
-
-  const [projects, setProjects] = useState<Project[]>([]);
+  // ✅ State variables adapted for Tasks
+  const [tasks, setTasks] = useState<ITask[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
-  );
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // State for modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [viewProjectDetails, setViewProjectDetails] = useState<Project | null>(
-    null
-  );
+  const [viewTaskDetails, setViewTaskDetails] = useState<ITask | null>(null);
 
   const open = Boolean(anchorEl);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString(undefined, {
+    return date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
+  };
+
+  // ✅ Status badge logic specific to Tasks
+  const getStatusBadgeStyle = (status: string) => {
+    let backgroundColor;
+    switch (status) {
+      case "ToDo":
+        backgroundColor = "#6c757d";
+        break;
+      case "InProgress":
+        backgroundColor = "#EF9B28";
+        break;
+      case "Done":
+        backgroundColor = "#315951";
+        break;
+      default:
+        backgroundColor = "#333";
+    }
+    return {
+      backgroundColor,
+      padding: "0.5rem 1rem",
+      borderRadius: "20px",
+      fontSize: "0.9rem",
+      fontWeight: 300,
+      color: "#fff",
+    };
   };
 
   const handlePageSizeChange = (event: SelectChangeEvent<number>) => {
     setPageSize(Number(event.target.value));
+    setPage(1); // Reset to first page on page size change
   };
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,
-    projectId: string
+    taskId: string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedProjectId(projectId);
+    setSelectedTaskId(taskId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedProjectId(null);
+    setSelectedTaskId(null);
   };
 
   const handleView = () => {
-    if (selectedProjectId) {
-      const projectToView = projects.find((p) => p.id === selectedProjectId);
-      if (projectToView) {
-        setViewProjectDetails(projectToView);
+    if (selectedTaskId) {
+      const taskToView = tasks.find((t) => t.id === selectedTaskId);
+      if (taskToView) {
+        setViewTaskDetails(taskToView);
         setShowViewModal(true);
       }
     }
     handleMenuClose();
   };
 
-  const handleCloseViewModal = () => {
-    setShowViewModal(false);
-    setViewProjectDetails(null);
+  const handleUpdate = () => {
+    if (selectedTaskId) {
+      navigate(`/dashboard/task-data/${selectedTaskId}`);
+    }
+    handleMenuClose();
   };
 
-  const handleCloseDelete = () => {
-    setShowDeleteModal(false);
-    setProjectToDelete(null);
-  };
+  const handleCloseViewModal = () => setShowViewModal(false);
+  const handleCloseDelete = () => setShowDeleteModal(false);
 
-  const handleDelete = async () => {
-    if (!projectToDelete) return;
+  // ✅ fetchTasks function following the project list pattern
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      await axiosInstance.delete(`/Project/${projectToDelete}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("Project deleted successfully!");
-      handleCloseDelete();
-      fetchProjects(); // Refresh list
-    } catch (error) {
-      console.error("Error deleting project:", error);
-      toast.error("Failed to delete project.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      const endpoint =
+        loginData?.userGroup === "Manager"
+          ? taskUrl.getAllManager
+          : taskUrl.GET_EMPLOYEE_TASKS;
 
-  const fetchProjects = async () => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      console.error("Authentication Error: No token found in local storage.");
-      toast.error("Authentication Error: No token found.");
-      setLoading(false);
-      return;
-    }
-
-    try {
       const res = await axiosInstance.get(
-        `${
-          loginData?.userGroup === "Manager"
-            ? projectUrl.AllProjectsManager
-            : projectUrl.AllProjectsEmployee
-        }?page=${page}&pageSize=${pageSize}`
+        `${endpoint}?page=${page}&pageSize=${pageSize}`
       );
-
-      setProjects(res.data.data || []);
+      setTasks(res.data.data || []);
       setTotalPages(res.data.totalNumberOfPages);
       setTotalRecords(res.data.totalNumberOfRecords);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to fetch projects.");
+      toast.error("Failed to fetch tasks.");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, loginData]);
+
+  useEffect(() => {
+    if (loginData) {
+      fetchTasks();
+    }
+  }, [fetchTasks, loginData]);
+
+  // ✅ handleDelete function following the project list pattern
+  const handleDelete = async () => {
+    if (!taskToDelete) return;
+    setLoading(true);
+    try {
+      await axiosInstance.delete(`/Task/${taskToDelete}`);
+      toast.success("Task deleted successfully!");
+      handleCloseDelete();
+      fetchTasks(); // Refresh list after delete
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task.");
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchProjects();
-  }, [page, pageSize]);
 
   const headerStyle: React.CSSProperties = {
     backgroundColor: "rgba(49, 89, 81, 0.9)",
@@ -171,9 +184,7 @@ export default function Projects_List() {
     padding: "1rem",
   };
 
-  const cellPadding: React.CSSProperties = {
-    padding: "1rem",
-  };
+  const cellPadding: React.CSSProperties = { padding: "1rem" };
 
   return (
     <div style={{ backgroundColor: "#F5F5F5", minHeight: "100vh" }}>
@@ -208,11 +219,11 @@ export default function Projects_List() {
               padding: "6px 16px",
               fontWeight: 500,
             }}
-            onClick={() => navigate("/dashboard/project-data")}
+            onClick={() => navigate("/dashboard/task-data")}
             className="d-flex align-items-center"
           >
             <span style={{ fontSize: "1.5rem", marginRight: "5px" }}>+</span>
-            Add New Project
+            Add New Task
           </button>
         )}
       </div>
@@ -231,7 +242,12 @@ export default function Projects_List() {
           }}
         >
           {loading ? (
-            <ClipLoader />
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "50vh" }}
+            >
+              <ClipLoader color="#315951" size={50} />
+            </div>
           ) : (
             <>
               <Table striped hover responsive>
@@ -239,41 +255,40 @@ export default function Projects_List() {
                   <tr>
                     <th style={headerStyle}>Title</th>
                     <th style={headerStyle}>Status</th>
-                    <th style={headerStyle}>Created At</th>
-                    <th style={headerStyle}>Description</th>
+                    <th style={headerStyle}>Project</th>
+                    <th style={headerStyle}>Assigned To</th>
+                    <th style={headerStyle}>Created On</th>
                     {loginData?.userGroup === "Manager" && (
                       <th style={headerStyle}>Actions</th>
                     )}
                   </tr>
                 </thead>
                 <tbody className="text-center">
-                  {projects.length > 0 ? (
-                    projects.map((project, index) => (
-                      <tr key={project.id || index}>
-                        <td style={cellPadding}>{project.title}</td>
-                        <td style={cellPadding}>
-                          <Badge
-                            bg=""
-                            style={{
-                              backgroundColor: "#315951E5",
-                              padding: "0.5rem 1rem",
-                              borderRadius: "20px",
-                              fontSize: "0.9rem",
-                              fontWeight: 300,
-                            }}
-                            className="text-white"
-                          >
-                            Active
+                  {tasks.length > 0 ? (
+                    tasks.map((task) => (
+                      <tr key={task.id}>
+                        {/* ✅ CRITICAL: Added data-label for responsive behavior */}
+                        <td data-label="Title" style={cellPadding}>
+                          {task.title}
+                        </td>
+                        <td data-label="Status" style={cellPadding}>
+                          <Badge bg="" style={getStatusBadgeStyle(task.status)}>
+                            {task.status}
                           </Badge>
                         </td>
-                        <td style={cellPadding}>
-                          {formatDate(project.creationDate)}
+                        <td data-label="Project" style={cellPadding}>
+                          {task.project.title}
                         </td>
-                        <td style={cellPadding}>{project.description}</td>
+                        <td data-label="Assigned To" style={cellPadding}>
+                          {task.employee.userName}
+                        </td>
+                        <td data-label="Created On" style={cellPadding}>
+                          {formatDate(task.creationDate)}
+                        </td>
                         {loginData?.userGroup === "Manager" && (
-                          <td style={cellPadding}>
+                          <td data-label="Actions" style={cellPadding}>
                             <IconButton
-                              onClick={(e) => handleMenuOpen(e, project.id)}
+                              onClick={(e) => handleMenuOpen(e, task.id)}
                             >
                               <MoreVertIcon />
                             </IconButton>
@@ -283,37 +298,41 @@ export default function Projects_List() {
                     ))
                   ) : (
                     <tr>
-                      <td style={cellPadding} colSpan={5}>
-                        No projects found
+                      <td
+                        style={cellPadding}
+                        colSpan={loginData?.userGroup === "Manager" ? 6 : 5}
+                      >
+                        No tasks found
                       </td>
                     </tr>
                   )}
                 </tbody>
               </Table>
 
-              {/* Dropdown Menu */}
               <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
                 <MenuItemMUI onClick={handleView}>
-                  <VisibilityIcon fontSize="small" style={{ marginRight: 8 }} />
+                  <VisibilityIcon fontSize="small" style={{ marginRight: 8 }} />{" "}
                   View
                 </MenuItemMUI>
-
+                <MenuItemMUI onClick={handleUpdate}>
+                  <EditIcon fontSize="small" style={{ marginRight: 8 }} /> Edit
+                </MenuItemMUI>
                 <MenuItemMUI
                   onClick={() => {
                     handleMenuClose();
-                    if (selectedProjectId) {
-                      setProjectToDelete(selectedProjectId);
+                    if (selectedTaskId) {
+                      setTaskToDelete(selectedTaskId);
                       setShowDeleteModal(true);
                     }
                   }}
                   sx={{ color: "error.main" }}
                 >
-                  <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />
+                  <DeleteIcon fontSize="small" style={{ marginRight: 8 }} />{" "}
                   Delete
                 </MenuItemMUI>
               </Menu>
 
-              {/* Pagination */}
+              {/* Pagination Section (Identical structure) */}
               <div
                 style={{
                   display: "flex",
@@ -339,7 +358,6 @@ export default function Projects_List() {
                     variant="outlined"
                     shape="rounded"
                   />
-
                   <FormControl size="small" style={{ minWidth: 100 }}>
                     <Select<number>
                       value={pageSize}
@@ -353,7 +371,6 @@ export default function Projects_List() {
                     </Select>
                   </FormControl>
                 </div>
-
                 <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>
                   Page <strong>{page}</strong> of <strong>{totalPages}</strong>{" "}
                   | Showing <strong>{pageSize}</strong> per page | Total
@@ -365,37 +382,52 @@ export default function Projects_List() {
         </div>
       </div>
 
-      {/* Delete Modal */}
+      {/* Modals */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton />
         <Modal.Body>
-          <DeleteConfirmation deleteItem="project" />
+          <DeleteConfirmation deleteItem="task" />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDelete}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Yes, Delete
+          <Button variant="danger" onClick={handleDelete} disabled={loading}>
+            {loading ? "Deleting..." : "Yes, Delete"}
           </Button>
         </Modal.Footer>
       </Modal>
 
-      {/* View Details Modal */}
       <Modal show={showViewModal} onHide={handleCloseViewModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Project Details</Modal.Title>
+          <Modal.Title>Task Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {viewProjectDetails ? (
+          {viewTaskDetails ? (
             <div>
-              <h5>{viewProjectDetails.title}</h5>
+              <h5>{viewTaskDetails.title}</h5>
               <p>
-                <strong>Description:</strong> {viewProjectDetails.description}
+                <strong>Status:</strong>{" "}
+                <Badge
+                  bg=""
+                  style={getStatusBadgeStyle(viewTaskDetails.status)}
+                >
+                  {viewTaskDetails.status}
+                </Badge>
+              </p>
+              <p>
+                <strong>Project:</strong> {viewTaskDetails.project.title}
+              </p>
+              <p>
+                <strong>Assigned To:</strong>{" "}
+                {viewTaskDetails.employee.userName}
+              </p>
+              <p>
+                <strong>Description:</strong> {viewTaskDetails.description}
               </p>
               <p>
                 <strong>Created On:</strong>{" "}
-                {formatDate(viewProjectDetails.creationDate)}
+                {formatDate(viewTaskDetails.creationDate)}
               </p>
             </div>
           ) : (

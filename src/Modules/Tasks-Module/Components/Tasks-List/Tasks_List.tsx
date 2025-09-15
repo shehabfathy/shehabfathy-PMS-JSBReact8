@@ -243,9 +243,9 @@ export default function Tasks_List() {
       </div>
 
       {/* Table Section */}
-      <div style={{ padding: "1rem", marginTop: "1rem" }}>
+      <section style={{ padding: "1rem", marginTop: "1rem" }}>
         <div
-          className="table-container text-center"
+          className="table-container text-center "
           style={{
             background: "#fff",
             borderRadius: "12px",
@@ -257,7 +257,7 @@ export default function Tasks_List() {
         >
           {loading ? (
             <div
-              className="d-flex justify-content-center align-items-center"
+              className="d-flex justify-content-center align-items-center table-responsive"
               style={{ minHeight: "50vh" }}
             >
               <ClipLoader color="#315951" size={50} />
@@ -269,7 +269,6 @@ export default function Tasks_List() {
                   <tr>
                     <th style={headerStyle}>Title</th>
                     <th style={headerStyle}>Status</th>
-                    <th style={headerStyle}>Project</th>
                     <th style={headerStyle}>Assigned To</th>
                     <th style={headerStyle}>Created On</th>
                     {loginData?.userGroup === "Manager" && (
@@ -281,19 +280,25 @@ export default function Tasks_List() {
                   {tasks.length > 0 ? (
                     tasks.map((task) => (
                       <tr key={task.id}>
-                        <td style={cellPadding}>{task.title}</td>
-                        <td style={cellPadding}>
+                        <td data-label="Title" style={cellPadding}>
+                          {task.title}
+                        </td>
+                        <td data-label="Status" style={cellPadding}>
                           <Badge bg="" style={getStatusBadgeStyle(task.status)}>
                             {task.status}
                           </Badge>
                         </td>
-                        <td style={cellPadding}>{task.project.title}</td>
-                        <td style={cellPadding}>{task.employee.userName}</td>
-                        <td style={cellPadding}>
+                        {/* <td data-lable="Project" style={cellPadding}>
+                          {task.project.title}
+                        </td> */}
+                        <td data-label="Assigned To" style={cellPadding}>
+                          {task.employee.userName}
+                        </td>
+                        <td data-label="Created On" style={cellPadding}>
                           {formatDate(task.creationDate)}
                         </td>
                         {loginData?.userGroup === "Manager" && (
-                          <td style={cellPadding}>
+                          <td data-label="Actions" style={cellPadding}>
                             <IconButton
                               onClick={(e) => handleMenuOpen(e, task.id)}
                             >
@@ -388,7 +393,7 @@ export default function Tasks_List() {
             </>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>

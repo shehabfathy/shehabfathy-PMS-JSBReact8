@@ -145,3 +145,44 @@ section {
     border: none !important;
   }
 }
+
+@media only screen and (max-width: 900px) {
+  /* Hide table header, but keep it accessible */
+  .table-responsive thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .table-responsive tr {
+    /* Add a border to separate the "rows" */
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem; /* Add some space between rows */
+  }
+
+  /* Make table cells display as blocks */
+  .table-responsive td {
+    display: block !important;
+    border-bottom: 1px solid #eee;
+    position: relative; /* Crucial for positioning the ::before element */
+    padding-left: 50% !important; /* Make space for the label. Adjust % as needed */
+    text-align: right; /* Align cell content to the right */
+  }
+
+  .table-responsive td:last-child {
+    border-bottom: 0;
+  }
+
+  /* Create the label using the data-label attribute */
+  .table-responsive td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px; /* Added the 'px' unit */
+    width: 45%; /* Control the width of the label area */
+    padding-right: 10px;
+    font-weight: bold;
+    text-align: left; /* Align the label text to the left */
+  }
+}
+
+/* Better fix for Bootstrap Dropdown in Collapsed Navbar */

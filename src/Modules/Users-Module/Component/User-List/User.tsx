@@ -104,6 +104,8 @@ export default function UserList() {
     fetchUsers();
   }, [page]);
 
+  console.log(users);
+
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,
     userId: number
@@ -202,7 +204,7 @@ export default function UserList() {
       </div>
 
       {/* Table Section */}
-      <section style={{ padding: "1rem", marginTop: "1rem" }}>
+      <div style={{ padding: "1rem", marginTop: "1rem" }}>
         <div
           className="table-container text-center"
           style={{
@@ -331,7 +333,7 @@ export default function UserList() {
                 </MenuItemMUI>
               </Menu>
 
-              {/* Pagination Section */}
+              {/* Pagindiv */}
               <div
                 style={{
                   display: "flex",
@@ -381,7 +383,7 @@ export default function UserList() {
             <NoData />
           )}
         </div>
-      </section>
+      </div>
 
       {/* Modals */}
       <Modal

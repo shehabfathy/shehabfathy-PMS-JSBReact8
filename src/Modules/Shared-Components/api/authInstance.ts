@@ -1,7 +1,7 @@
 // src/api/axiosInstance.ts
 import axios from "axios";
 
-export const imgUrl = `https://upskilling-egypt.com:3006/`;
+export const imgUrl = `https://upskilling-egypt.com:3003/`;
 
 const axiosInstance = axios.create({
   baseURL: "https://upskilling-egypt.com:3003/api/v1", // ✅ API base URL

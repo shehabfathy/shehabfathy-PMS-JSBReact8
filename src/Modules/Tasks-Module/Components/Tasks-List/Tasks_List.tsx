@@ -243,7 +243,7 @@ export default function Tasks_List() {
       </div>
 
       {/* Table Section */}
-      <section style={{ padding: "1rem", marginTop: "1rem" }}>
+      <div style={{ padding: "1rem", marginTop: "1rem" }}>
         <div
           className="table-container text-center "
           style={{
@@ -393,7 +393,7 @@ export default function Tasks_List() {
             </>
           )}
         </div>
-      </section>
+      </div>
 
       {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDelete} centered>

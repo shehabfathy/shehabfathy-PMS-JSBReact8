@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import profile from "../../../../assets/Ellipse 18.png";
 import logo from "../../../../assets/logo.png";
 import { Link, useLocation } from "react-router-dom";

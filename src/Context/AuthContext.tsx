@@ -32,7 +32,6 @@ interface Props {
 /** ---------- Provider ---------- */
 export function AuthContextProvider({ children }: Props) {
   const [loginData, setLoginData] = useState<LoginData | null>(null);
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
 
   function getUser() {
     const token = localStorage.getItem("token");
@@ -51,7 +50,7 @@ export function AuthContextProvider({ children }: Props) {
   function logOut() {
     localStorage.removeItem("token");
     setLoginData(null);
-    setRedirectToLogin(true); // trigger redirect
+    <Navigate to="/login" />; // trigger redirect
   }
 
   useEffect(() => {
@@ -59,10 +58,6 @@ export function AuthContextProvider({ children }: Props) {
       getUser();
     }
   }, []);
-
-  if (redirectToLogin) {
-    return <Navigate to="/login" replace />;
-  }
 
   return (
     <AuthContext.Provider value={{ loginData, logOut, getUser }}>

@@ -1,18 +1,20 @@
-import { jwtDecode } from "jwt-decode";
-import React, { createContext, useEffect, useState } from "react";
+import * as jwt from "jwt-decode";
+import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+// Destructure jwtDecode so you can use it like { jwtDecode }
+const { jwtDecode } = jwt;
 
+/** ---------- Types ---------- */
 type LoginData = {
   userName: string;
   userEmail: string;
   userId: number;
-  userGroup: string; // Add this
-  roles: string[]; // Add this
-  exp: number;
+  userGroup?: string;
+  roles?: string[];
+  exp?: number;
 };
 
 type AuthContextType = {
@@ -21,31 +23,35 @@ type AuthContextType = {
   getUser: () => void;
 };
 
-interface AuthContextProviderProps {
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+interface Props {
   children: ReactNode;
 }
 
-export function AuthContextProvider({ children }: AuthContextProviderProps) {
+/** ---------- Provider ---------- */
+export function AuthContextProvider({ children }: Props) {
   const [loginData, setLoginData] = useState<LoginData | null>(null);
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
 
   function getUser() {
     const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded: LoginData = jwtDecode(token);
-        setLoginData(decoded);
-      } catch (error) {
-        const err = error as { message: string };
-        toast.error(err.message || "Invalid token");
-        logOut();
-      }
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode<LoginData>(token);
+      setLoginData(decoded);
+    } catch (err) {
+      const e = err as { message?: string };
+      toast.error(e.message || "Invalid token");
+      logOut();
     }
   }
 
   function logOut() {
     localStorage.removeItem("token");
     setLoginData(null);
-    <Navigate to="/login" />;
+    setRedirectToLogin(true); // trigger redirect
   }
 
   useEffect(() => {
@@ -53,6 +59,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       getUser();
     }
   }, []);
+
+  if (redirectToLogin) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <AuthContext.Provider value={{ loginData, logOut, getUser }}>

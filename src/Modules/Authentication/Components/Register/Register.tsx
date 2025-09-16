@@ -58,7 +58,7 @@ function Register() {
         data.append("profileImage", formData.profileImage[0]);
       }
 
-      const response = await axiosInstance.post("/Users/Register", data, {
+      await axiosInstance.post("/Users/Register", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

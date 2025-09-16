@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import logo from "../../../../assets/auth-logo.svg";
 import axiosInstance from "../../../Shared-Components/api/authInstance"; // adjust path
 import { ClipLoader } from "react-spinners";
-import { emailValidation } from "../../../Shared-Components/Components/utils/formValidation";
 
 // ✅ Types for form inputs
 export type VerifyAccountInputs = {
@@ -16,7 +15,7 @@ export type VerifyAccountInputs = {
 
 function VerifyAccount() {
   const navigate = useNavigate();
-  let { state } = useLocation({});
+  const { state } = useLocation();
   const {
     register,
     handleSubmit,
@@ -26,9 +25,7 @@ function VerifyAccount() {
   // ✅ Submit handler
   const handleVerify: SubmitHandler<VerifyAccountInputs> = async (data) => {
     try {
-      const response = await axiosInstance.put("/Users/Verify", data);
-
-      console.log("📩 Verify API Response:", response.data);
+      await axiosInstance.put("/Users/Verify", data);
       toast.success("✅ Account Verified Successfully!");
       navigate("/login");
     } catch (err) {

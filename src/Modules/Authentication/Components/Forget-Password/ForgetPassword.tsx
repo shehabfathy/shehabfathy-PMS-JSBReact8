@@ -2,11 +2,14 @@ import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { emailValidation } from "../../../Shared-Components/Components/utils/formValidation";
+import { FORGET_EMAIL_VALIDATION } from "../../../Shared-Components/Components/utils/formValidation";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 import { ClipLoader } from "react-spinners";
 import logo from "../../../../assets/auth-logo.svg";
 
+export type ForgetFormValues = {
+  email: string;
+};
 export default function ForgetPassword() {
   const navigate = useNavigate();
   const {
@@ -14,10 +17,6 @@ export default function ForgetPassword() {
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<ForgetFormValues>();
-
-  type ForgetFormValues = {
-    email: string;
-  };
 
   const onSubmit = async (value: ForgetFormValues) => {
     try {
@@ -55,7 +54,7 @@ export default function ForgetPassword() {
                 <label>E-mail</label>
                 <div className="input-group form-input mb-2">
                   <input
-                    {...register("email", emailValidation)}
+                    {...register("email", FORGET_EMAIL_VALIDATION)}
                     type="email"
                     className="form-control"
                     placeholder="Enter your E-mail"

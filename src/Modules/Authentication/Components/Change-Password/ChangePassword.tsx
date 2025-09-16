@@ -2,11 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../Shared-Components/Components/routes/routes";
 import logo from "../../../../assets/auth-logo.svg";
 import { useForm } from "react-hook-form";
-import { PASSWORD_VALIDATION } from "../../../Shared-Components/Components/utils/formValidation";
-import axios from "axios";
+import {
+  NEW_PASSWORD_VALIDATION,
+  OLD_PASSWORD_VALIDATION,
+} from "../../../Shared-Components/Components/utils/formValidation";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import { useState } from "react";
+export type ResetFormValues = {
+  newPassword: string;
+  oldPassword: string;
+  confirmNewPassword: string;
+};
 export default function ChangePassword() {
   const [Show, setShow] = useState(false);
   const navigate = useNavigate();
@@ -17,21 +25,17 @@ export default function ChangePassword() {
     handleSubmit,
   } = useForm<ResetFormValues>();
 
-  type ResetFormValues = {
-    newPassword: string;
-    oldPassword: string;
-    confirmNewPassword: string;
-  };
   const onSubmit = async (value: ResetFormValues) => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `https://upskilling-egypt.com:3003/api/v1/Users/ChangePassword`,
         value
       );
       toast.success("Password changed successful. Please login");
       navigate(ROUTES.LOGIN);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Something went wrong!");
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Something went wrong!");
     }
   };
 
@@ -57,7 +61,7 @@ export default function ChangePassword() {
                 <label>Old Password</label>
                 <div className="position-relative">
                   <input
-                    {...register("oldPassword", PASSWORD_VALIDATION)}
+                    {...register("oldPassword", OLD_PASSWORD_VALIDATION)}
                     type={Show ? "text" : "password"}
                     className="form-control pe-5"
                     placeholder="Enter your old password"
@@ -87,7 +91,7 @@ export default function ChangePassword() {
                 <label>New Password</label>
                 <div className="position-relative">
                   <input
-                    {...register("newPassword", PASSWORD_VALIDATION)}
+                    {...register("newPassword", NEW_PASSWORD_VALIDATION)}
                     type={Show ? "text" : "password"}
                     className="form-control pe-5"
                     placeholder="Enter your new password"

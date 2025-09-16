@@ -31,7 +31,7 @@ import { useContext } from "react";
 import EmployeeTask from "./Modules/Tasks-Module/Components/EmployeeTask/EmployeeTask";
 
 function App() {
-  const { loginData } = useContext(AuthContext);
+  const { loginData } = useContext(AuthContext)!;
   const routes = createBrowserRouter([
     {
       path: ROUTES.ROOT,

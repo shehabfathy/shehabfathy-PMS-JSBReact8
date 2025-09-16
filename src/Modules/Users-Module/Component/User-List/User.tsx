@@ -27,6 +27,7 @@ import axiosInstance, {
 } from "../../../Shared-Components/api/authInstance";
 import NoData from "../../../Shared-Components/Components/NoData/NoData";
 import GirlPhoto from "../../../../assets/header.png"; // Default avatar
+import type { AxiosError } from "axios";
 
 // ✅ Define the User interface
 interface IUser {
@@ -80,8 +81,8 @@ export default function UserList() {
       setTotalPages(data.totalNumberOfPages);
       setTotalRecords(data.totalNumberOfRecords);
     } catch (error) {
-      toast.error("Failed to fetch users.");
-      console.error(error);
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Failed to fetch users.");
     } finally {
       setLoading(false);
     }
@@ -103,8 +104,6 @@ export default function UserList() {
   useEffect(() => {
     fetchUsers();
   }, [page]);
-
-  console.log(users);
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,

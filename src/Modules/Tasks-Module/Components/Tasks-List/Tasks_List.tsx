@@ -38,7 +38,7 @@ export interface IUserTask {
 
 export default function Tasks_List() {
   const navigate = useNavigate();
-  const { loginData } = useContext(AuthContext);
+  const { loginData } = useContext(AuthContext)!;
 
   const [tasks, setTasks] = useState<IUserTask[]>([]);
   const [page, setPage] = useState(1);

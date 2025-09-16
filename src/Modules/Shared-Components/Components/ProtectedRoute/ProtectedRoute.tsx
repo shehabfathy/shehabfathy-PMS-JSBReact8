@@ -1,9 +1,12 @@
-import React, { Children, useContext } from "react";
+import { useContext, type ReactNode } from "react";
 import { AuthContext } from "../../../../Context/AuthContext";
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children }) {
-  const { loginData } = useContext(AuthContext);
+type MyComponentProps = {
+  children: ReactNode;
+};
+export default function ProtectedRoute({ children }: MyComponentProps) {
+  const { loginData } = useContext(AuthContext)!;
 
   if (loginData || localStorage.getItem("token")) {
     return children;

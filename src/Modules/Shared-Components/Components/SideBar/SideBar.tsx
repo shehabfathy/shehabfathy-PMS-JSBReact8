@@ -14,7 +14,7 @@ import {
 import "./SideBar.modules.css";
 
 export default function SideBar() {
-  const { logOut, loginData } = useContext(AuthContext);
+  const { logOut, loginData } = useContext(AuthContext)!;
   const [iscollapse, setCollapse] = useState(false);
   const location = useLocation();
 

@@ -38,7 +38,7 @@ interface ITask {
 
 export default function Tasks_List() {
   const navigate = useNavigate();
-  const { loginData } = useContext(AuthContext);
+  const { loginData } = useContext(AuthContext)!;
 
   // ✅ State variables adapted for Tasks
   const [tasks, setTasks] = useState<ITask[]>([]);

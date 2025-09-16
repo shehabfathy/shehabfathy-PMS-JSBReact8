@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Button from "../../../Shared-Components/Components/Button/Button";
 import { useNavigate, useParams } from "react-router-dom"; // 1. Import useParams
 import { toast } from "react-toastify";
+import type { AxiosError } from "axios";
 
 // Define the shape of our form data
 type FormValues = {
@@ -117,10 +118,10 @@ export default function Tasks_Data() {
       }
       reset();
       navigate("/dashboard/task-list");
-    } catch (error: any) {
-      console.error("Error submitting task:", error);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
       toast.error(
-        error.response?.data?.message || "An error occurred. Please try again."
+        err.response?.data?.message || "An error occurred. Please try again."
       );
     } finally {
       setLoading(false);

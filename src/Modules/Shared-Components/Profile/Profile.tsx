@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext"; // Adjust the import path as needed
 
 const UserProfile = () => {
@@ -14,7 +14,7 @@ const UserProfile = () => {
     );
   }
 
-  const { loginData, logOut } = authContext;
+  const { loginData, logOut } = authContext!;
 
   return (
     <div className="container mt-5">
@@ -45,25 +45,25 @@ const UserProfile = () => {
               <ul className="list-group list-group-flush">
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                   <strong>Username:</strong>
-                  <span>{loginData.userName}</span>
+                  <span>{loginData?.userName}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                   <strong>Email:</strong>
-                  <span className="text-muted">{loginData.userEmail}</span>
+                  <span className="text-muted">{loginData?.userEmail}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                   <strong>Group:</strong>
                   {/* Display the userGroup from the token */}
                   <span className="badge bg-primary rounded-pill">
-                    {loginData.userGroup}
+                    {loginData?.userGroup}
                   </span>
                 </li>
                 <li className="list-group-item">
                   <strong>Roles:</strong>
                   <div className="mt-2">
                     {/* Map over the roles and display them as badges */}
-                    {loginData.roles &&
-                      loginData.roles.map((role) => (
+                    {loginData?.roles &&
+                      loginData?.roles.map((role) => (
                         <span
                           key={role}
                           className="badge bg-secondary me-1 mb-1"

@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
 
 export default function DashBoard() {
-  const { loginData } = useContext(AuthContext);
+  const { loginData } = useContext(AuthContext)!;
 
   // ✅ safe defaults to prevent undefined
   const [tasks, setTask] = useState({ toDo: 0, inProgress: 0, done: 0 });

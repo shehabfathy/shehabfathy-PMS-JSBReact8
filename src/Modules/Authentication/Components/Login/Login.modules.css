@@ -1,0 +1,6 @@
+@media (max-width: 413px) {
+  .btns {
+    flex-direction: column;
+    text-align: center;
+  }
+}

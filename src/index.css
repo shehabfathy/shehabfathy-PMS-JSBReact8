@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900&display=swap");
+
+* {
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
+
+.auth-form {
+  background: rgba(49, 74, 89, 0.9);
+  /* #314A59 with 90% opacity */
+}
+
+section {
+  background-color: #013025;
+  background-repeat: no-repeat;
+  background-size: 25%, 35%;
+  background-position: bottom left, top right;
+}
+
+.login-container {
+  background-image: url(../src/assets/bg.png), url(../src/assets/bg-1.png);
+}
+
+.register-container {
+  background-image: url(../src/assets/register-1.png),
+    url(../src/assets/register-2.png);
+}
+
+.verfiy-container {
+  background-image: url(../src/assets/verfiy-1.png),
+    url(../src/assets/verfiy-2.png);
+}
+
+.forget-container {
+  background-image: url(../src/assets/bg.png), url(../src/assets/bg-1.png);
+}
+
+/* Style all labels */
+.form-container label {
+  color: #ef9b28;
+  /* Orange text for labels */
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+/* Keep input transparent at all times */
+.form-container input.form-control {
+  background-color: transparent !important;
+  /* Force transparency  */
+  border: none;
+  border-bottom: 2px solid #ef9b28;
+  border-radius: 0;
+  color: white;
+  padding: 10px 5px;
+  font-size: 1rem;
+  box-shadow: none !important;
+  /*Remove Bootstrap shadows*/
+}
+
+/* Placeholder styling */
+.form-container input.form-control::placeholder {
+  color: white;
+  opacity: 0.8;
+}
+
+/* Focus state: keep transparent and change border */
+.form-container input.form-control:focus {
+  background-color: transparent !important;
+  /*Stop white background */
+  outline: none;
+  box-shadow: none !important;
+  border-bottom: 2px solid #ffffff;
+  /*Highlight border on focus*/
+}
+
+/* Title color */
+.title h4 {
+  color: #ef9b28;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Upload Image Box */
+.upload-label {
+  background-color: #314a59e5;
+  opacity: 0.9;
+  width: 200px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+  background-color: #3b5c6e;
+}
+
+.error-text {
+  color: #ef9b28;
+  /* your theme orange */
+  font-size: 0.875rem;
+  margin-top: 4px;
+  white-space: normal;
+  /* Wrap text */
+  word-wrap: break-word;
+}
+
+.form-wrapper {
+  max-height: calc(100vh - 100px);
+  /* Adjust for header/footer */
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.btn-submit {
+  background-color: #ef9b28 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    width: 80% !important;
+  }
+
+  .header {
+    text-align: center;
+  }
+}
+@media (max-width: 991px) {
+  .navbar-nav li:first-child {
+    display: none;
+  }
+  .navbar-nav li:last-child {
+    border: none !important;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  /* Hide table header, but keep it accessible */
+  .table-responsive thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .table-responsive tr {
+    /* Add a border to separate the "rows" */
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem; /* Add some space between rows */
+  }
+
+  /* Make table cells display as blocks */
+  .table-responsive td {
+    display: block !important;
+    border-bottom: 1px solid #eee;
+    position: relative; /* Crucial for positioning the ::before element */
+    padding-left: 50% !important; /* Make space for the label. Adjust % as needed */
+    text-align: right; /* Align cell content to the right */
+  }
+
+  .table-responsive td:last-child {
+    border-bottom: 0;
+  }
+
+  /* Create the label using the data-label attribute */
+  .table-responsive td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px; /* Added the 'px' unit */
+    width: 45%; /* Control the width of the label area */
+    padding-right: 10px;
+    font-weight: bold;
+    text-align: left; /* Align the label text to the left */
+  }
+}
+
+/* Better fix for Bootstrap Dropdown in Collapsed Navbar */

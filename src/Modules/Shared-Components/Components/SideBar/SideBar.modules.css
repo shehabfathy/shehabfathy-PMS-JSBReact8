@@ -1,0 +1,24 @@
+.ps-menu-root,
+.sidebar-continer {
+  background-color: #0e382f !important;
+}
+
+a.ps-menu-button {
+  color: #fff !important;
+  transition: all 1s;
+}
+a.ps-menu-button:hover {
+  background-color: rgba(239, 155, 40, 0.2) !important;
+  color: #ef9b28 !important;
+}
+
+.ps-active {
+  background-color: #145c4b !important;
+  color: #ef9b28 !important;
+}
+
+.sidebar_icon {
+  right: -10px;
+  top: 5px;
+  cursor: pointer;
+}
